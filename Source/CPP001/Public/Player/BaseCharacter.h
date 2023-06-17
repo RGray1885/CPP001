@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/CharacterMovementComponent.h"
+//#include "GameFramework/CharacterMovementComponent.h"
+#include "CPP001/Public/Components/BaseCharMoveComponent.h"
 #include "BaseCharacter.generated.h"
 
 class UCameraComponent;
@@ -17,7 +18,7 @@ class CPP001_API ABaseCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	ABaseCharacter();
+  ABaseCharacter(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,6 +30,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+    bool IsRunning() const;
 
 
 protected:
@@ -49,4 +53,5 @@ protected:
     UCharacterMovementComponent *CharacterMovement = GetCharacterMovement();
     bool bIsMovingForward;
     bool bIsMovingSideways;
+    bool bShouldRun = false;
 };

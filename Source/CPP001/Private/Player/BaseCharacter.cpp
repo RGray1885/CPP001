@@ -4,10 +4,12 @@
 #include "Player/BaseCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/BaseCharMoveComponent.h"
 #include "Components/InputComponent.h"
 
 // Sets default values
-ABaseCharacter::ABaseCharacter()
+ABaseCharacter::ABaseCharacter(const FObjectInitializer &ObjectInitializer)
+    : Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharMoveComponent>(ACharacter::CharacterMovementComponentName))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -46,7 +48,14 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAxis("LookUp", this, &ABaseCharacter::AddControllerPitchInput);
     PlayerInputComponent->BindAxis("LookAround", this, &ABaseCharacter::AddControllerYawInput);
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABaseCharacter::Jump);
+    PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ABaseCharacter::OnSprint);
+    PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ABaseCharacter::StopSprint);
 
+}
+
+bool ABaseCharacter::IsRunning() const
+{
+    return bShouldRun && bIsMovingForward && !bIsMovingSideways && !GetVelocity().IsZero();
 }
 
 float ABaseCharacter::GetMovementDirection() const
@@ -78,9 +87,11 @@ void ABaseCharacter::MoveRight(float Amount)
 
 void ABaseCharacter::OnSprint()
 {
+    bShouldRun = true;
 }
 
 void ABaseCharacter::StopSprint()
 {
+    bShouldRun = false;
 }
 
