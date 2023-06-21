@@ -5,11 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 //#include "GameFramework/CharacterMovementComponent.h"
-#include "CPP001/Public/Components/BaseCharMoveComponent.h"
+//#include "BaseCharMoveComponent.h"
 #include "BaseCharacter.generated.h"
 
 class UCameraComponent;
 class USpringArmComponent;
+class UHealthComponent;
+class UBaseCharMoveComponent;
+class UTextRenderComponent;
 
 UCLASS()
 class CPP001_API ABaseCharacter : public ACharacter
@@ -40,9 +43,13 @@ protected:
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
   UCameraComponent* CameraComponent;
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-  USpringArmComponent *SpringArmComponent;
+  USpringArmComponent* SpringArmComponent;
   UFUNCTION(BlueprintPure, Category = "Movement")
   float GetMovementDirection() const;
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+  UHealthComponent* HealthComponent;
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+  UTextRenderComponent *HealthTextComponent;
 
   private:
 	  //MovementControl
@@ -54,4 +61,6 @@ protected:
     bool bIsMovingForward;
     bool bIsMovingSideways;
     bool bShouldRun = false;
+
+	
 };

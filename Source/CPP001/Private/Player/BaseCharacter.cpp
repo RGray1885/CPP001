@@ -6,6 +6,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/BaseCharMoveComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/HealthComponent.h"
+#include "Components/TextRenderComponent.h"
+
 
 // Sets default values
 ABaseCharacter::ABaseCharacter(const FObjectInitializer &ObjectInitializer)
@@ -21,6 +24,9 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer &ObjectInitializer)
     SpringArmComponent->TargetArmLength = 350.0f;
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
+    HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
+    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+    HealthTextComponent->SetupAttachment(GetRootComponent());
 }
 
 
@@ -29,15 +35,21 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer &ObjectInitializer)
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+    check(HealthComponent);
+    check(HealthTextComponent);
 	
+
 }
 
 // Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+    const auto Health = HealthComponent->GetHealth();
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("% .0f"), Health)));
+   
 }
+
 
 // Called to bind functionality to input
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -94,4 +106,5 @@ void ABaseCharacter::StopSprint()
 {
     bShouldRun = false;
 }
+
 
