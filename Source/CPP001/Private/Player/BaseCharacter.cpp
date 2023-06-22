@@ -8,6 +8,9 @@
 #include "Components/InputComponent.h"
 #include "Components/HealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "GameFramework/Controller.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
 
 // Sets default values
@@ -37,7 +40,11 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
     check(HealthComponent);
     check(HealthTextComponent);
-	
+    check(GetCharacterMovement());
+    HealthComponent->OnDeath.AddUObject(this, &ABaseCharacter::OnDeath);
+    HealthComponent->OnHealthChanged.AddUObject(this, &ABaseCharacter::OnHealthChanged);
+    OnHealthChanged(HealthComponent->GetHealth());
+    LandedDelegate.AddDynamic(this, &ABaseCharacter::OnGroundLanded);
 
 }
 
@@ -45,8 +52,7 @@ void ABaseCharacter::BeginPlay()
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-    const auto Health = HealthComponent->GetHealth();
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("% .0f"), Health)));
+    
    
 }
 
@@ -55,6 +61,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+    check(PlayerInputComponent);
     PlayerInputComponent->BindAxis("MoveForward", this, &ABaseCharacter::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ABaseCharacter::MoveRight);
     PlayerInputComponent->BindAxis("LookUp", this, &ABaseCharacter::AddControllerPitchInput);
@@ -105,6 +112,35 @@ void ABaseCharacter::OnSprint()
 void ABaseCharacter::StopSprint()
 {
     bShouldRun = false;
+}
+
+void ABaseCharacter::OnDeath()
+{
+    UE_LOG(LogBaseCharacter, Warning, TEXT("Player %s is dead"), *GetName());
+    PlayAnimMontage(DeathAnimMontage);
+
+    GetCharacterMovement()->DisableMovement();
+    SetLifeSpan(LifeSpanOnDeath);
+    if (Controller)
+    {
+        Controller->ChangeState(NAME_Spectating);
+    }
+}
+
+void ABaseCharacter::OnHealthChanged(float Health)
+{
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("% .0f"), Health)));
+}
+
+void ABaseCharacter::OnGroundLanded(const FHitResult &Hit)
+{
+    const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
+    UE_LOG(LogBaseCharacter, Display, TEXT("OnLanded: %f"), FallVelocityZ);
+    if (FallVelocityZ < LandedDamageVelocity.X)
+        return;
+    const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
+    TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+    UE_LOG(LogBaseCharacter, Display, TEXT("Final Damage: %f"), FinalDamage);
 }
 
 

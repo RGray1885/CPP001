@@ -50,7 +50,14 @@ protected:
   UHealthComponent* HealthComponent;
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
   UTextRenderComponent *HealthTextComponent;
-
+  UPROPERTY(EditDefaultsOnly, Category = "Animations")
+  UAnimMontage *DeathAnimMontage;
+  UPROPERTY(EditDefaultsOnly, Category = "Movement")
+  FVector2D LandedDamageVelocity=FVector2D(900.0f, 1200.0f); 
+  UPROPERTY(EditDefaultsOnly, Category = "Movement")
+  FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
+  UPROPERTY(EditDefaultsOnly, Category = "Damage")
+  float LifeSpanOnDeath = 5.0f;
   private:
 	  //MovementControl
     void MoveForward(float Amount);
@@ -61,6 +68,9 @@ protected:
     bool bIsMovingForward;
     bool bIsMovingSideways;
     bool bShouldRun = false;
-
+    void OnDeath();
+    void OnHealthChanged(float Health);
+    UFUNCTION()
+	void OnGroundLanded(const FHitResult& Hit);
 	
 };

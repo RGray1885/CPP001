@@ -2,10 +2,13 @@
 
 #include "Components/HealthComponent.h"
 #include "GameFramework/Actor.h"
-#include "FireDamageType.h"
+/*#include "FireDamageType.h"
 #include "IceDamageType.h"
+*/
 
-DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent,All,All)
+
+
+DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
 
 // Sets default values for this component's properties
@@ -22,7 +25,8 @@ UHealthComponent::UHealthComponent()
 void UHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
-    Health = MaxHealth;
+    SetHealth(MaxHealth);
+    //OnHealthChanged.Broadcast(Health);
     AActor* ComponentOwner = GetOwner();
     if (ComponentOwner)
     {
@@ -32,20 +36,42 @@ void UHealthComponent::BeginPlay()
     // ...
 }
 
-void UHealthComponent::DepleteHealth(float Amount)
+/* void UHealthComponent::DepleteHealth(float Amount)
 {
     if (Health > 0.0f)
     {
         Health -= Amount;
     }
-}
+}*/
 void UHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const UDamageType *DamageType,
                                            AController *InstigatedBy, AActor *DamageCauser)
 {
     //DepleteHealth(Damage);
-    Health -= Damage;
+    
+    if (Damage <= 0.0f || IsDead())
+        return;
+    //Health = FMath::Clamp(Health - Damage, 0.0f,MaxHealth);
+    SetHealth(Health - Damage);
+    //OnHealthChanged.Broadcast(Health);
+    if (GetOwner()->GetWorldTimerManager().IsTimerActive(HealTimer))
+    {
+        GetOwner()->GetWorldTimerManager().ClearTimer(HealTimer);
+
+    };
+    if (Health < MaxHealth && IsDead()==false)
+    {
+        //OnHeal(); 
+         bShouldHeal = true;
+        GetOwner()->GetWorldTimerManager().SetTimer(HealTimer,this,&UHealthComponent::OnHeal,HealUpdateTime,bShouldHeal,HealDelay);
+    }
+
+    if (IsDead())
+    {
+        bShouldHeal = false;
+        OnDeath.Broadcast();
+    }
     UE_LOG(LogHealthComponent, Display, TEXT("Damage: %f"),Damage);
-    if (DamageType)
+    /* if (DamageType)
     {
         if (DamageType->IsA<UFireDamageType>())
         {
@@ -55,14 +81,38 @@ void UHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const
         {
             UE_LOG(LogHealthComponent, Display, TEXT("Ice Damage: %f"), Damage)
         }
+    }*/
+}
+
+void UHealthComponent::OnHeal()
+{
+    if (Health < MaxHealth&&bShouldHeal&&IsDead()==false)
+    {
+        //Health = FMath::Min(Health+HealModifier,MaxHealth);
+        SetHealth(Health + HealModifier);
+        UE_LOG(LogHealthComponent, Warning, TEXT("Healing in progress"))
+        OnHealthChanged.Broadcast(Health);
+
+    }
+    else if (FMath::IsNearlyEqual(Health,MaxHealth,0))
+    {
+        bShouldHeal = false;
+        GetOwner()->GetWorldTimerManager().ClearTimer(HealTimer);
+        UE_LOG(LogHealthComponent, Warning, TEXT("Healing Complete or player %s is dead"),*GetOwner()->GetName());
     }
 }
 
+void UHealthComponent::SetHealth(float NewHealth)
+{
+    Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
+    OnHealthChanged.Broadcast(Health);
+}
+
 // Called every frame
-/* void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,
+void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                           FActorComponentTickFunction *ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-    //DepleteHealth(0.1);
+    
     // ...
-}*/
+}
