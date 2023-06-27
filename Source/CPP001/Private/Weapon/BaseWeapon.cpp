@@ -2,6 +2,13 @@
 
 
 #include "Weapon/BaseWeapon.h"
+<<<<<<< Updated upstream
+=======
+#include "Components/SkeletalMeshComponent.h"
+
+
+DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon,All,All);
+>>>>>>> Stashed changes
 
 // Sets default values
 ABaseWeapon::ABaseWeapon()
@@ -19,10 +26,22 @@ void ABaseWeapon::BeginPlay()
 	
 }
 
+<<<<<<< Updated upstream
+=======
+void ABaseWeapon::Fire()
+{
+    UE_LOG(LogBaseWeapon, Display, TEXT("Fire!"));
+}
+
+>>>>>>> Stashed changes
 // Called every frame
 /* void ABaseWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+<<<<<<< Updated upstream
 }*/
 
+=======
+}*/
+>>>>>>> Stashed changes

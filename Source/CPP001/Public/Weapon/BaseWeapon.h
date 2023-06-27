@@ -21,13 +21,21 @@ protected:
 	virtual void BeginPlay() override;
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent *WeaponMesh;
+<<<<<<< Updated upstream
   UPROPERTY(EditDefaultsOnly, Category = "Ammo")
   int32 ClipSize;
   UPROPERTY(EditDefaultsOnly, Category = "Ammo")
   int32 CurrentAmmo;
+=======
+ 
+>>>>>>> Stashed changes
 
 public:	
 	// Called every frame
 	//virtual void Tick(float DeltaTime) override;
+<<<<<<< Updated upstream
+=======
+  virtual void Fire();
+>>>>>>> Stashed changes
 
 };

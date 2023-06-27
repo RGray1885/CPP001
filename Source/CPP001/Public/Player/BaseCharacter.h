@@ -13,7 +13,12 @@ class USpringArmComponent;
 class UHealthComponent;
 class UBaseCharMoveComponent;
 class UTextRenderComponent;
+<<<<<<< Updated upstream
 class ABaseWeapon;
+=======
+class UWeaponComponent;
+
+>>>>>>> Stashed changes
 
 UCLASS()
 class CPP001_API ABaseCharacter : public ACharacter
@@ -51,6 +56,8 @@ protected:
   UHealthComponent* HealthComponent;
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
   UTextRenderComponent *HealthTextComponent;
+  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+  UWeaponComponent *WeaponComponent;
   UPROPERTY(EditDefaultsOnly, Category = "Animations")
   UAnimMontage *DeathAnimMontage;
   UPROPERTY(EditDefaultsOnly, Category = "Movement")
@@ -59,8 +66,12 @@ protected:
   FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
   UPROPERTY(EditDefaultsOnly, Category = "Damage")
   float LifeSpanOnDeath = 5.0f;
+<<<<<<< Updated upstream
   UPROPERTY(EditDefaultsOnly, Category = "Weapon")
   TSubclassOf<ABaseWeapon> WeaponClass;
+=======
+  
+>>>>>>> Stashed changes
   
 private:
 	  //MovementControl
