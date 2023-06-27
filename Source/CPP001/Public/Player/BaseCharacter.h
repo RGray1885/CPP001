@@ -13,6 +13,7 @@ class USpringArmComponent;
 class UHealthComponent;
 class UBaseCharMoveComponent;
 class UTextRenderComponent;
+class ABaseWeapon;
 
 UCLASS()
 class CPP001_API ABaseCharacter : public ACharacter
@@ -58,7 +59,10 @@ protected:
   FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
   UPROPERTY(EditDefaultsOnly, Category = "Damage")
   float LifeSpanOnDeath = 5.0f;
-  private:
+  UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+  TSubclassOf<ABaseWeapon> WeaponClass;
+  
+private:
 	  //MovementControl
     void MoveForward(float Amount);
     void MoveRight(float Amount);
@@ -72,5 +76,6 @@ protected:
     void OnHealthChanged(float Health);
     UFUNCTION()
 	void OnGroundLanded(const FHitResult& Hit);
+    void SpawnWeapon();
 	
 };

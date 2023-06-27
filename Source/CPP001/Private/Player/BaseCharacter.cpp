@@ -9,6 +9,7 @@
 #include "Components/HealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
+#include "Weapon/BaseWeapon.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
@@ -24,12 +25,14 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer &ObjectInitializer)
 	SpringArmComponent->SetupAttachment(GetRootComponent());
     SpringArmComponent->bUsePawnControlRotation = true;
     SpringArmComponent->bEnableCameraLag = true;
-    SpringArmComponent->TargetArmLength = 350.0f;
+    SpringArmComponent->TargetArmLength = 220.0f;
+    SpringArmComponent->SocketOffset = FVector(0.0f,100.0f,110.0f);
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
     HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
+    HealthTextComponent->SetOwnerNoSee(true);
 }
 
 
@@ -45,6 +48,7 @@ void ABaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &ABaseCharacter::OnHealthChanged);
     OnHealthChanged(HealthComponent->GetHealth());
     LandedDelegate.AddDynamic(this, &ABaseCharacter::OnGroundLanded);
+    SpawnWeapon();
 
 }
 
@@ -141,6 +145,20 @@ void ABaseCharacter::OnGroundLanded(const FHitResult &Hit)
     const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
     UE_LOG(LogBaseCharacter, Display, TEXT("Final Damage: %f"), FinalDamage);
+}
+
+void ABaseCharacter::SpawnWeapon()
+{
+    if (!GetWorld())
+        return;
+    const auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+    if (Weapon)
+    {
+        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,false);
+        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
+    }
+
+
 }
 
 
