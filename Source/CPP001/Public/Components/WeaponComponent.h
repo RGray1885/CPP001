@@ -2,27 +2,34 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "CoreMinimal.h"
 #include "WeaponComponent.generated.h"
 
-
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class ABaseWeapon;
+UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CPP001_API UWeaponComponent : public UActorComponent
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
-	UWeaponComponent();
+  public:
+    // Sets default values for this component's properties
+    UWeaponComponent();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+  protected:
+    // Called when the game starts
+    UPROPERTY()
+    ABaseWeapon *CurrentWeapon = nullptr;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TSubclassOf<ABaseWeapon> WeaponClass;
 
-		
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    FName WeaponAttachmentPointName = "WeaponSocket";
+    virtual void BeginPlay() override;
+
+  
+  public:
+    void FireWeapon();
+    void SpawnWeapon();
 };

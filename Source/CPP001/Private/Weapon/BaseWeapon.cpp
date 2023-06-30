@@ -2,14 +2,17 @@
 
 
 #include "Weapon/BaseWeapon.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "BaseWeapon.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 // Sets default values
 ABaseWeapon::ABaseWeapon()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
     WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
-
+    SetRootComponent(WeaponMesh);
 }
 
 // Called when the game starts or when spawned
@@ -19,10 +22,9 @@ void ABaseWeapon::BeginPlay()
 	
 }
 
-// Called every frame
-/* void ABaseWeapon::Tick(float DeltaTime)
+void ABaseWeapon::Fire()
 {
-	Super::Tick(DeltaTime);
+    UE_LOG(LogBaseWeapon, Warning, TEXT("Fire!"));
+}
 
-}*/
 

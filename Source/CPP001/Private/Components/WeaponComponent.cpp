@@ -2,13 +2,15 @@
 
 
 #include "Components/WeaponComponent.h"
+#include "Weapon/BaseWeapon.h"
+#include "Player/BaseCharacter.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -18,17 +20,34 @@ UWeaponComponent::UWeaponComponent()
 void UWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+    SpawnWeapon();
 	// ...
 	
 }
 
-
-// Called every frame
-void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UWeaponComponent::FireWeapon()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+    if (!CurrentWeapon)
+        return;
+    CurrentWeapon->Fire();
 }
+
+void UWeaponComponent::SpawnWeapon()
+{
+    if (!GetWorld())
+        return;
+	ACharacter *OwnerCharacter = Cast<ACharacter>(GetOwner());
+    if (!OwnerCharacter)
+        return;
+
+    if (!WeaponClass)
+        return;
+    CurrentWeapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
+	if (CurrentWeapon)
+	{
+        FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget, false);
+        CurrentWeapon->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentRule, "WeaponSocket");
+	}
+}
+
 

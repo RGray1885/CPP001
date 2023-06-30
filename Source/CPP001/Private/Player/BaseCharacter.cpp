@@ -10,6 +10,7 @@
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
 #include "Weapon/BaseWeapon.h"
+#include "Components/WeaponComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
@@ -33,6 +34,7 @@ ABaseCharacter::ABaseCharacter(const FObjectInitializer &ObjectInitializer)
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
     HealthTextComponent->SetOwnerNoSee(true);
+    WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponControlComponent");
 }
 
 
@@ -48,7 +50,7 @@ void ABaseCharacter::BeginPlay()
     HealthComponent->OnHealthChanged.AddUObject(this, &ABaseCharacter::OnHealthChanged);
     OnHealthChanged(HealthComponent->GetHealth());
     LandedDelegate.AddDynamic(this, &ABaseCharacter::OnGroundLanded);
-    SpawnWeapon();
+   
 
 }
 
@@ -73,6 +75,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ABaseCharacter::Jump);
     PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ABaseCharacter::OnSprint);
     PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ABaseCharacter::StopSprint);
+    PlayerInputComponent->BindAction("FireWeapon", IE_Pressed, WeaponComponent, &UWeaponComponent::FireWeapon);
 
 }
 
@@ -146,19 +149,4 @@ void ABaseCharacter::OnGroundLanded(const FHitResult &Hit)
     TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
     UE_LOG(LogBaseCharacter, Display, TEXT("Final Damage: %f"), FinalDamage);
 }
-
-void ABaseCharacter::SpawnWeapon()
-{
-    if (!GetWorld())
-        return;
-    const auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);
-    if (Weapon)
-    {
-        FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget,false);
-        Weapon->AttachToComponent(GetMesh(), AttachmentRules, "WeaponSocket");
-    }
-
-
-}
-
 

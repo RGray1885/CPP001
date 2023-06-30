@@ -22,12 +22,13 @@ protected:
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent *WeaponMesh;
   UPROPERTY(EditDefaultsOnly, Category = "Ammo")
-  int32 ClipSize;
+  int32 ClipSize=30;
   UPROPERTY(EditDefaultsOnly, Category = "Ammo")
-  int32 CurrentAmmo;
+  int32 CurrentAmmo=30;
 
 public:	
 	// Called every frame
 	//virtual void Tick(float DeltaTime) override;
-
+public:
+  void Fire();
 };
