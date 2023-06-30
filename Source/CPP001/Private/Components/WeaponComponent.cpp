@@ -47,6 +47,7 @@ void UWeaponComponent::SpawnWeapon()
 	{
         FAttachmentTransformRules AttachmentRule(EAttachmentRule::SnapToTarget, false);
         CurrentWeapon->AttachToComponent(OwnerCharacter->GetMesh(), AttachmentRule, "WeaponSocket");
+        CurrentWeapon->SetOwner(OwnerCharacter);
 	}
 }
 
