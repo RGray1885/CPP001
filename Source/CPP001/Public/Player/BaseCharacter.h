@@ -16,6 +16,7 @@ class UTextRenderComponent;
 class ABaseWeapon;
 class UWeaponComponent;
 
+
 UCLASS()
 class CPP001_API ABaseCharacter : public ACharacter
 {

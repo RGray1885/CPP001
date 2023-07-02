@@ -7,7 +7,6 @@
 #include "BaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
-
 UCLASS()
 class CPP001_API ABaseWeapon : public AActor
 {
@@ -30,6 +29,8 @@ protected:
   FName MuzzleSocketName = "MuzzleSocket";
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Firing")
   float TraceMaxDistance = 1500.0f;
+  UPROPERTY(EditDefaultsonly, Category = "Damage")
+  float DamagePerHit = 2.0f;
 
 public:	
 	// Called every frame
@@ -37,6 +38,13 @@ public:
 public:
   void Fire();
 
+  
+
 protected:
   void MakeShot();
+  APlayerController *ABaseWeapon::GetPlayerController() const;
+  bool GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const;
+  FVector GetMuzzleLocation() const;
+  bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const;
+  void MakeHit(FHitResult &HitResult, const FVector &TraceStart, const FVector &TraceEnd);
 };

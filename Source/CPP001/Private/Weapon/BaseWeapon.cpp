@@ -24,7 +24,6 @@ void ABaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
     check(WeaponMesh);
-	
 }
 
 void ABaseWeapon::Fire()
@@ -37,40 +36,67 @@ void ABaseWeapon::MakeShot()
 {
     if(!GetWorld()) return;
 
-    const auto Player = Cast<ACharacter>(GetOwner());
-    if (!Player)
-        return;
-    const auto Controller = Player->GetController<APlayerController>();
-    if (!Controller)
-        return;
-    FVector ViewLocation;
-    FRotator ViewRotation;
-    Controller->GetPlayerViewPoint(ViewLocation,ViewRotation);
-
-    const FTransform SocketTransform = WeaponMesh->GetSocketTransform(MuzzleSocketName);
-    const FVector TraceStart = ViewLocation; // SocketTransform.GetLocation();
-    const FVector ShootDirection = ViewRotation.Vector();
-    //SocketTransform.GetRotation().GetForwardVector();
-    const FVector TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
-
-    FCollisionQueryParams CollisionParams;
-    CollisionParams.AddIgnoredActor(GetOwner());
-
+    FVector TraceStart;
+    FVector TraceEnd;
+    if(!GetTraceData(TraceStart,TraceEnd))return;
     FHitResult HitResult;
-    GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+    MakeHit(HitResult, TraceStart, TraceEnd);
 
     if(HitResult.bBlockingHit)
     {
-        DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), HitResult.ImpactPoint, FColor::Green, false, 3.0f, 0, 3);
+        DrawDebugLine(GetWorld(), GetMuzzleLocation(), HitResult.ImpactPoint, FColor::Green, false, 3.0f, 0, 3);
 
         DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.0f, 32, FColor::Red, false, 3.0f, 0, 3);
-        UE_LOG(LogBaseWeapon, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
+        auto HitActor = HitResult.GetActor();
+        if (!HitActor)
+            return;
+        HitActor->TakeDamage(DamagePerHit, FDamageEvent{}, nullptr, nullptr);
     }
     else
     {
-        DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3);
+        DrawDebugLine(GetWorld(), GetMuzzleLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3);
 
     }
+    
 }
+APlayerController *ABaseWeapon::GetPlayerController() const
+{
+    const auto Player = Cast<ACharacter>(GetOwner());
+    if (!Player)
+        return nullptr;
+    return Player->GetController<APlayerController>();
+}
+bool ABaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const
+{
+    const auto Controller = GetPlayerController();
+    if (!Controller)
+        return false;
+    Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+    return true;
+}
+FVector ABaseWeapon::GetMuzzleLocation() const
+{
+    return WeaponMesh->GetSocketLocation(MuzzleSocketName);
+}
+bool ABaseWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
+{
+    FVector ViewLocation;
+    FRotator ViewRotation;
+    if(!GetPlayerViewPoint(ViewLocation, ViewRotation))return false;
 
+    TraceStart = ViewLocation;
+    const FVector ShootDirection = ViewRotation.Vector();
 
+    TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
+    return true;
+}
+void ABaseWeapon::MakeHit(FHitResult &HitResult, const FVector &TraceStart, const FVector &TraceEnd)
+{
+    if (!GetWorld())
+        return;
+    FCollisionQueryParams CollisionParams;
+    CollisionParams.AddIgnoredActor(GetOwner());
+
+    GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
+   
+}
