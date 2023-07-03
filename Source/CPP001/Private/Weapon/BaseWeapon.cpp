@@ -47,10 +47,7 @@ void ABaseWeapon::MakeShot()
         DrawDebugLine(GetWorld(), GetMuzzleLocation(), HitResult.ImpactPoint, FColor::Green, false, 3.0f, 0, 3);
 
         DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.0f, 32, FColor::Red, false, 3.0f, 0, 3);
-        auto HitActor = HitResult.GetActor();
-        if (!HitActor)
-            return;
-        HitActor->TakeDamage(DamagePerHit, FDamageEvent{}, nullptr, nullptr);
+        MakeDamage(HitResult);
     }
     else
     {
@@ -99,4 +96,11 @@ void ABaseWeapon::MakeHit(FHitResult &HitResult, const FVector &TraceStart, cons
 
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
    
+}
+void ABaseWeapon::MakeDamage(const FHitResult& HitResult)
+{
+    const auto HitActor=HitResult.GetActor();
+    if (!HitActor)
+        return;
+    HitActor->TakeDamage(DamagePerHit, FDamageEvent{}, GetPlayerController(), this);
 }

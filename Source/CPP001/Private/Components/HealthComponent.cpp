@@ -48,7 +48,7 @@ void UHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const
 {
     //DepleteHealth(Damage);
     
-    if (Damage <= 0.0f || IsDead())
+    if (Damage<=0.0f || IsDead())
         return;
     //Health = FMath::Clamp(Health - Damage, 0.0f,MaxHealth);
     SetHealth(Health - Damage);

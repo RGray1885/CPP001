@@ -51,4 +51,10 @@ void UWeaponComponent::SpawnWeapon()
 	}
 }
 
+void UWeaponComponent::RemoveWeapon(float LifeSpanOnDeath)
+{
+    CurrentWeapon->SetLifeSpan(LifeSpanOnDeath);
+}
+
+
 

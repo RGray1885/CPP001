@@ -47,4 +47,5 @@ protected:
   FVector GetMuzzleLocation() const;
   bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const;
   void MakeHit(FHitResult &HitResult, const FVector &TraceStart, const FVector &TraceEnd);
+  void MakeDamage(const FHitResult& HitResult);
 };

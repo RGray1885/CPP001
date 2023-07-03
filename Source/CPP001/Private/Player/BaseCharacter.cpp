@@ -11,6 +11,7 @@
 #include "GameFramework/Controller.h"
 #include "Weapon/BaseWeapon.h"
 #include "Components/WeaponComponent.h"
+#include "Components/CapsuleComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
@@ -128,6 +129,9 @@ void ABaseCharacter::OnDeath()
 
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(LifeSpanOnDeath);
+    GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    HealthTextComponent->SetHiddenInGame(true);
+    WeaponComponent->RemoveWeapon(LifeSpanOnDeath);
     if (Controller)
     {
         Controller->ChangeState(NAME_Spectating);
