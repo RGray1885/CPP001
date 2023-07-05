@@ -77,6 +77,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ABaseCharacter::OnSprint);
     PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ABaseCharacter::StopSprint);
     PlayerInputComponent->BindAction("FireWeapon", IE_Pressed, WeaponComponent, &UWeaponComponent::FireWeapon);
+    PlayerInputComponent->BindAction("FireWeapon", IE_Released, WeaponComponent, &UWeaponComponent::StopFiring);
 
 }
 

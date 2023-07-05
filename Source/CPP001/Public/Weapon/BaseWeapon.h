@@ -29,14 +29,23 @@ protected:
   FName MuzzleSocketName = "MuzzleSocket";
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Firing")
   float TraceMaxDistance = 1500.0f;
+  UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Firing")
+  bool AutoFireAvailable;
   UPROPERTY(EditDefaultsonly, Category = "Damage")
   float DamagePerHit = 2.0f;
+  UPROPERTY(EditDefaultsonly, Category = "Damage")
+  float WeaponRateOfFire = 0.12f;
+
 
 public:	
 	// Called every frame
 	//virtual void Tick(float DeltaTime) override;
+
 public:
   void Fire();
+  float GetWeaponRateOfFire(){return WeaponRateOfFire;}
+  bool GetAutoFireAvaiability(){return AutoFireAvailable;}
+
 
   
 
