@@ -31,7 +31,6 @@ void UWeaponComponent::FireWeapon()
         return;
     if (CurrentWeapon->GetAutoFireAvaiability())
     {
-        //MakeShot();
         TriggerPulled = true;
         GetOwner()->GetWorldTimerManager().SetTimer(ShotTimer, this, &UWeaponComponent::MakeShot,
                                                     CurrentWeapon->GetWeaponRateOfFire(), TriggerPulled, 0.0f);
@@ -43,8 +42,8 @@ void UWeaponComponent::FireWeapon()
 }
 void UWeaponComponent::MakeShot()
 {
-    //if (!TriggerPulled)
-        //return;
+    if (!TriggerPulled)
+        return;
     CurrentWeapon->Fire();
 }
 

@@ -36,4 +36,5 @@ class CPP001_API UWeaponComponent : public UActorComponent
     void StopFiring();
     void SpawnWeapon();
     void RemoveWeapon(float LifeSpanOnDeath);
+   
 };
