@@ -27,12 +27,12 @@ class CPP001_API UWeaponComponent : public UActorComponent
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName WeaponAttachmentPointName = "WeaponSocket";
     virtual void BeginPlay() override;
-    bool TriggerPulled = false;
-    FTimerHandle ShotTimer;
+    //bool TriggerPulled = false;
+    //FTimerHandle ShotTimer;
   
   public:
     void FireWeapon();
-    void MakeShot();
+    //void MakeShot();
     void StopFiring();
     void SpawnWeapon();
     void RemoveWeapon(float LifeSpanOnDeath);

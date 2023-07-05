@@ -133,6 +133,7 @@ void ABaseCharacter::OnDeath()
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     HealthTextComponent->SetHiddenInGame(true);
     WeaponComponent->RemoveWeapon(LifeSpanOnDeath);
+    WeaponComponent->StopFiring();
     if (Controller)
     {
         Controller->ChangeState(NAME_Spectating);

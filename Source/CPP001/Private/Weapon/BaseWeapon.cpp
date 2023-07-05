@@ -26,16 +26,33 @@ void ABaseWeapon::BeginPlay()
     check(WeaponMesh);
 }
 
-void ABaseWeapon::Fire()
+void ABaseWeapon::StartFire()
 {
+    /*
     UE_LOG(LogBaseWeapon, Warning, TEXT("Fire!"));
-    MakeShot();
+    TriggerPulled = true;
+    if (AutoFireAvailable)
+    {
+        GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ABaseWeapon::MakeShot, WeaponRateOfFire, TriggerPulled,
+                                               WeaponFireDelay);
+    }
+    else
+    {
+        MakeShot();
+    } */  
+}
+
+void ABaseWeapon::StopFire()
+{
+    /* TriggerPulled = false;
+    GetWorld()->GetTimerManager().ClearTimer(ShotTimer);*/
 }
 
 void ABaseWeapon::MakeShot()
 {
+    /* if (!TriggerPulled)
+        return;
     if(!GetWorld()) return;
-
     FVector TraceStart;
     FVector TraceEnd;
     if(!GetTraceData(TraceStart,TraceEnd))return;
@@ -54,7 +71,7 @@ void ABaseWeapon::MakeShot()
         DrawDebugLine(GetWorld(), GetMuzzleLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3);
 
     }
-    
+    */
 }
 APlayerController *ABaseWeapon::GetPlayerController() const
 {
@@ -76,7 +93,7 @@ FVector ABaseWeapon::GetMuzzleLocation() const
     return WeaponMesh->GetSocketLocation(MuzzleSocketName);
 }
 bool ABaseWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
-{
+{ 
     FVector ViewLocation;
     FRotator ViewRotation;
     if(!GetPlayerViewPoint(ViewLocation, ViewRotation))return false;

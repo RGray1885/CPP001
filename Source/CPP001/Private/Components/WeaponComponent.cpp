@@ -29,27 +29,12 @@ void UWeaponComponent::FireWeapon()
 {
     if (!CurrentWeapon)
         return;
-    if (CurrentWeapon->GetAutoFireAvaiability())
-    {
-        TriggerPulled = true;
-        GetOwner()->GetWorldTimerManager().SetTimer(ShotTimer, this, &UWeaponComponent::MakeShot,
-                                                    CurrentWeapon->GetWeaponRateOfFire(), TriggerPulled, 0.0f);
-    }
-    else
-    {
-        MakeShot();
-    }
-}
-void UWeaponComponent::MakeShot()
-{
-    if (!TriggerPulled)
-        return;
-    CurrentWeapon->Fire();
+    CurrentWeapon->StartFire();
 }
 
 void UWeaponComponent::StopFiring()
 {
-    TriggerPulled = false;
+    CurrentWeapon->StopFire();
 }
 
 void UWeaponComponent::SpawnWeapon()
