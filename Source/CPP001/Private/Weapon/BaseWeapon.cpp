@@ -114,10 +114,3 @@ void ABaseWeapon::MakeHit(FHitResult &HitResult, const FVector &TraceStart, cons
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
    
 }
-void ABaseWeapon::MakeDamage(const FHitResult& HitResult)
-{
-    const auto HitActor=HitResult.GetActor();
-    if (!HitActor)
-        return;
-    HitActor->TakeDamage(DamagePerHit, FDamageEvent{}, GetPlayerController(), this);
-}

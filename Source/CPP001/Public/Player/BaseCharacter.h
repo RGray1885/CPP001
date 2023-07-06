@@ -79,6 +79,11 @@ private:
     void OnHealthChanged(float Health);
     UFUNCTION()
 	void OnGroundLanded(const FHitResult& Hit);
+public:
+    bool GetIsRunning()
+    {
+        return bShouldRun;
+    }
    
 	
 };

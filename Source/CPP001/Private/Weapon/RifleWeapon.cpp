@@ -62,3 +62,10 @@ bool ARifleWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
     TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
     return true;
 }
+void ARifleWeapon::MakeDamage(const FHitResult &HitResult)
+{
+    const auto HitActor = HitResult.GetActor();
+    if (!HitActor)
+        return;
+    HitActor->TakeDamage(DamagePerHit, FDamageEvent{}, GetPlayerController(), this);
+}

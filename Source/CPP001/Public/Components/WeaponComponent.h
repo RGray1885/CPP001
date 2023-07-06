@@ -18,23 +18,35 @@ class CPP001_API UWeaponComponent : public UActorComponent
 
   protected:
     // Called when the game starts
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    TArray<TSubclassOf<ABaseWeapon>> WeaponClasses;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    FName WeaponEquipSocketName = "WeaponSocket";
+    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+    FName WeaponArmorySocketName = "ArmorySocket";
+
+    virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+  private:
     UPROPERTY()
     ABaseWeapon *CurrentWeapon = nullptr;
+    UPROPERTY()
+    TArray<ABaseWeapon *> Weapons;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TSubclassOf<ABaseWeapon> WeaponClass;
+    int32 CurrentWeaponIndex = 0;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    FName WeaponAttachmentPointName = "WeaponSocket";
-    virtual void BeginPlay() override;
-    //bool TriggerPulled = false;
-    //FTimerHandle ShotTimer;
+    void AttachWeaponToSocket(ABaseWeapon *Weapon, USceneComponent *SceneComponent, const FName &SocketName);
+    void SpawnWeapons();
+    void EquipWeapon(int32 WeaponIndex);
   
   public:
     void FireWeapon();
-    //void MakeShot();
     void StopFiring();
-    void SpawnWeapon();
+    void NextWeapon();
     void RemoveWeapon(float LifeSpanOnDeath);
+
+  
    
 };

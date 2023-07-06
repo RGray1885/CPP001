@@ -78,6 +78,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ABaseCharacter::StopSprint);
     PlayerInputComponent->BindAction("FireWeapon", IE_Pressed, WeaponComponent, &UWeaponComponent::FireWeapon);
     PlayerInputComponent->BindAction("FireWeapon", IE_Released, WeaponComponent, &UWeaponComponent::StopFiring);
+    PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, WeaponComponent, &UWeaponComponent::NextWeapon);
 
 }
 
@@ -132,7 +133,6 @@ void ABaseCharacter::OnDeath()
     SetLifeSpan(LifeSpanOnDeath);
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     HealthTextComponent->SetHiddenInGame(true);
-    WeaponComponent->RemoveWeapon(LifeSpanOnDeath);
     WeaponComponent->StopFiring();
     if (Controller)
     {

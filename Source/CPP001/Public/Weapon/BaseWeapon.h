@@ -26,9 +26,9 @@ protected:
   int32 ClipSize=30;
   UPROPERTY(EditDefaultsOnly, Category = "Ammo")
   int32 CurrentAmmo=30;
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Firing")
+  UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Firing")
   FName MuzzleSocketName = "MuzzleSocket";
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Firing")
+  UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Firing")
   float TraceMaxDistance = 1500.0f;
   UPROPERTY(EditDefaultsonly, Category = "Damage")
   float DamagePerHit = 2.0f;
@@ -55,5 +55,4 @@ protected:
   bool GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const;
   FVector GetMuzzleLocation() const;
   void MakeHit(FHitResult &HitResult, const FVector &TraceStart, const FVector &TraceEnd);
-  void MakeDamage(const FHitResult& HitResult);
 };
