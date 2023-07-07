@@ -31,9 +31,9 @@ class CPP001_API UWeaponComponent : public UActorComponent
 
   private:
     UPROPERTY()
-    ABaseWeapon *CurrentWeapon = nullptr;
+    ABaseWeapon *CurrentWeapon = nullptr; //property for weapon in hand
     UPROPERTY()
-    TArray<ABaseWeapon *> Weapons;
+    TArray<ABaseWeapon *> Weapons; //array for weapon in possession
 
     int32 CurrentWeaponIndex = 0;
 
@@ -45,7 +45,6 @@ class CPP001_API UWeaponComponent : public UActorComponent
     void FireWeapon();
     void StopFiring();
     void NextWeapon();
-    void RemoveWeapon(float LifeSpanOnDeath);
 
   
    

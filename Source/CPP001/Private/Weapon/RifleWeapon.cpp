@@ -53,9 +53,9 @@ bool ARifleWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
 { 
     FVector ViewLocation;
     FRotator ViewRotation;
-    if(!GetPlayerViewPoint(ViewLocation, ViewRotation))return false;
+    if(!GetPlayerViewPoint(ViewLocation, ViewRotation))return false;                    
 
-    TraceStart = ViewLocation;
+    TraceStart = ViewLocation;                              
     const auto FireHalfRad = FMath::DegreesToRadians(BulletSpread);
     const FVector ShootDirection = FMath::VRandCone(ViewRotation.Vector(),FireHalfRad);
 
