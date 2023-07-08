@@ -4,6 +4,11 @@
 #include "Components/WeaponComponent.h"
 #include "Weapon/BaseWeapon.h"
 #include "Player/BaseCharacter.h"
+#include "Animations/EquipFinishedAnimNotify.h"
+#include "Animations/EquipStartAnimNotify.h"
+
+
+DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -20,6 +25,9 @@ UWeaponComponent::UWeaponComponent()
 void UWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+    CurrentWeaponIndex = 0;
+    InitAnimations();
     SpawnWeapons();
     EquipWeapon(CurrentWeaponIndex);
 	// ...
@@ -28,11 +36,13 @@ void UWeaponComponent::BeginPlay()
 
 void UWeaponComponent::FireWeapon()
 {
-    if (!CurrentWeapon)
+    if (!CanFire())
+    //if (!CurrentWeapon && EquipInProgress)
         return;
-    auto Player = Cast<ABaseCharacter> (CurrentWeapon->GetOwner()); //to prevent fire
-    if (!Player->GetIsRunning())                                    //during sprint
+    //auto Player = Cast<ABaseCharacter> (CurrentWeapon->GetOwner()); //to prevent fire
+    //if (!Player->GetIsRunning())                                    //during sprint or weapon change
     CurrentWeapon->StartFire();
+    IsFiring = true;
 }
 
 void UWeaponComponent::StopFiring()
@@ -40,6 +50,8 @@ void UWeaponComponent::StopFiring()
     if (!CurrentWeapon)
     return;
     CurrentWeapon->StopFire();
+    IsFiring = false;
+    
 }
 
 
@@ -53,6 +65,8 @@ void UWeaponComponent::AttachWeaponToSocket(ABaseWeapon *Weapon, USceneComponent
 }
 void UWeaponComponent::EquipWeapon(int32 WeaponIndex)
 {
+    if (!CanEquip())
+    return;
     ACharacter *OwnerCharacter = Cast<ACharacter>(GetOwner()); // the same as in SpawnWeapons method
     if (!OwnerCharacter||WeaponClasses.IsEmpty())                           
     return;
@@ -62,7 +76,10 @@ void UWeaponComponent::EquipWeapon(int32 WeaponIndex)
     }
     CurrentWeapon = Weapons[WeaponIndex];                                                   //get new weapon from array
     AttachWeaponToSocket(CurrentWeapon, OwnerCharacter->GetMesh(), WeaponEquipSocketName);  //attach new weapon to hands socket
+    PlayAnimMontage(EquipAnimMontage);
 }
+
+
 
 void UWeaponComponent::SpawnWeapons()                                                       //spawning weapon
 {
@@ -71,7 +88,7 @@ void UWeaponComponent::SpawnWeapons()                                           
         return;
     for (auto WeaponClass : WeaponClasses)                                                 //spawn WeaponClasses array elements
     {
-    auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);                         //spawn actor of class ABaseWeapon
+    auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(WeaponClass);                        //spawn actor of class ABaseWeapon
         if (!Weapon)
             continue;
         Weapon->SetOwner(OwnerCharacter);                                                   //set weapon's owner
@@ -96,7 +113,10 @@ void UWeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)        
 
 void UWeaponComponent::NextWeapon()                                    //Cycle through weapons in Weapons array
 {
-    if (!CurrentWeapon)                                                //Cycle if CurrentWeapon is Valid
+    if (!CanEquip()||!CurrentWeapon)
+    //if (EquipInProgress || !CurrentWeapon)
+        //return;
+    //if ()                                                //Cycle if CurrentWeapon is Valid
         return;
     StopFiring();                                                      //Prevent weapon from firing during switching
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();     
@@ -105,3 +125,68 @@ void UWeaponComponent::NextWeapon()                                    //Cycle t
 }
 
 
+void UWeaponComponent::PlayAnimMontage(UAnimMontage *Animation)
+{
+    ACharacter *OwnerCharacter = Cast<ACharacter>(GetOwner());
+    if (!OwnerCharacter)
+        return;
+    OwnerCharacter->PlayAnimMontage(Animation);
+}
+
+void UWeaponComponent::InitAnimations()
+{
+    if (!EquipAnimMontage)
+        return;
+    const auto NotifyEvents = EquipAnimMontage->Notifies;                           //get notifies from anim montage
+    for (auto NotifyEvent : NotifyEvents)                                               
+    {
+        auto EquipStartNotify = Cast<UEquipStartAnimNotify>(NotifyEvent.Notify);    //get notify -> cast to equip start notify
+        if (EquipStartNotify)                                                          //if cast success
+        {
+            EquipStartNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipStart);         //bind function to notify
+        }
+        auto EquipFinishedNotify = Cast<UEquipFinishedAnimNotify>(NotifyEvent.Notify);     //get notify -> cast to equip finished notify
+        if (EquipFinishedNotify)                                                           //if cast success
+        {
+            EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);   //bind function to notify
+        }
+        
+    }
+}
+
+void UWeaponComponent::OnEquipFinished(USkeletalMeshComponent*MeshComponent)
+{
+    ACharacter *OwnerCharacter = Cast<ACharacter>(GetOwner());
+    if (!OwnerCharacter||MeshComponent!=OwnerCharacter->GetMesh())
+        return;
+
+    //if (OwnerCharacter->GetMesh() == MeshComponent)
+    //{
+        UE_LOG(LogWeaponComponent, Display, TEXT("Equip Finished"));
+        EquipInProgress = false;
+    //}
+}
+
+void UWeaponComponent::OnEquipStart(USkeletalMeshComponent *MeshComponent)
+{
+    ACharacter *OwnerCharacter = Cast<ACharacter>(GetOwner());
+    if (!OwnerCharacter || MeshComponent!=OwnerCharacter->GetMesh())
+        return;
+    //if (OwnerCharacter->GetMesh() == MeshComponent)
+    //{
+        UE_LOG(LogWeaponComponent, Display, TEXT("Equip Start"));
+        EquipInProgress = true;
+    //}
+}
+
+bool UWeaponComponent::CanFire() const
+{
+        auto Player = Cast<ABaseCharacter>(CurrentWeapon->GetOwner());
+
+        return CurrentWeapon && !EquipInProgress && !Player->GetIsRunning();
+}
+
+bool UWeaponComponent::CanEquip() const
+{
+        return !EquipInProgress;
+}

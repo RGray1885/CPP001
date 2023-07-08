@@ -11,7 +11,15 @@ public class CPP001 : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
-		PublicIncludePaths.AddRange(new string[] { "CPP001/Public/Player", "CPP001/Public/Components", "CPP001/Public/Dev", "CPP001/Public/Weapon","CPP001/Public/UI" });
+		PublicIncludePaths.AddRange(new string[] 
+		{
+			"CPP001/Public/Player", 
+			"CPP001/Public/Components", 
+			"CPP001/Public/Dev", 
+			"CPP001/Public/Weapon",
+			"CPP001/Public/UI",
+			"CPP001/Public/Animations"
+		});
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

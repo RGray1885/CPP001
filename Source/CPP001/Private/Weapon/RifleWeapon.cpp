@@ -30,7 +30,7 @@ void ARifleWeapon::MakeShot()
         return;
     if (!GetWorld())
         return;
-    FVector TraceStart;
+    FVector TraceStart;                         
     FVector TraceEnd;
     if (!GetTraceData(TraceStart, TraceEnd))
         return;

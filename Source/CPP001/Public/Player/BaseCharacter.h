@@ -84,6 +84,9 @@ public:
     {
         return bShouldRun;
     }
-   
+    UWeaponComponent* GetWeaponComponent() const
+    {
+            return WeaponComponent;
+    }
 	
 };

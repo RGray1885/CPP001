@@ -116,6 +116,8 @@ void ABaseCharacter::MoveRight(float Amount)
 
 void ABaseCharacter::OnSprint()
 {
+    if (WeaponComponent->GetIsFiring())
+        return;
     bShouldRun = true;
 }
 

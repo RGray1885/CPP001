@@ -25,6 +25,8 @@ class CPP001_API UWeaponComponent : public UActorComponent
     FName WeaponEquipSocketName = "WeaponSocket";
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName WeaponArmorySocketName = "ArmorySocket";
+    UPROPERTY(EditDefaultsOnly, Category = "Animation")
+    UAnimMontage *EquipAnimMontage;
 
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -40,12 +42,24 @@ class CPP001_API UWeaponComponent : public UActorComponent
     void AttachWeaponToSocket(ABaseWeapon *Weapon, USceneComponent *SceneComponent, const FName &SocketName);
     void SpawnWeapons();
     void EquipWeapon(int32 WeaponIndex);
+    void PlayAnimMontage(UAnimMontage* Animation);
+    void InitAnimations();
+    void OnEquipFinished(USkeletalMeshComponent*MeshComponent);
+    void OnEquipStart(USkeletalMeshComponent *MeshComponent);
+    bool EquipInProgress;
+    bool CanFire() const;
+    bool CanEquip() const;
+    bool IsFiring;
   
   public:
     void FireWeapon();
     void StopFiring();
     void NextWeapon();
-
+    bool GetIsFiring() const
+    {
+        return IsFiring;
+    }
+   
   
    
 };
