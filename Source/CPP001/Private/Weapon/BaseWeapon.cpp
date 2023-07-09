@@ -48,6 +48,9 @@ void ABaseWeapon::StopFire()
     GetWorld()->GetTimerManager().ClearTimer(ShotTimer);*/
 }
 
+
+
+
 void ABaseWeapon::MakeShot()
 {
     /* if (!TriggerPulled)
@@ -72,6 +75,9 @@ void ABaseWeapon::MakeShot()
 
     }
     */
+    if (!HaveAmmoToShoot())
+        return;
+    AmmoConsumption();
 }
 APlayerController *ABaseWeapon::GetPlayerController() const
 {
@@ -113,4 +119,39 @@ void ABaseWeapon::MakeHit(FHitResult &HitResult, const FVector &TraceStart, cons
 
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility);
    
+}
+void ABaseWeapon::ConsumeAmmo()
+{
+    if (CurrentAmmo == 0)
+    {
+        UE_LOG(LogBaseWeapon, Warning, TEXT("Don't have ammo in clip to shoot"));
+        return;
+    }
+    CurrentAmmo -= AmmoPerShotConsumption;
+    UE_LOG(LogBaseWeapon, Warning, TEXT("Ammo left: %i"),CurrentAmmo);
+    if (CurrentAmmo == 0)
+        UE_LOG(LogBaseWeapon, Warning, TEXT("Clip is empty"));
+}
+void ABaseWeapon::AmmoConsumption()
+{
+    if (ShouldConsumeAmmo())
+        ConsumeAmmo();
+    else
+    {
+        UE_LOG(LogBaseWeapon, Warning, TEXT("Ammo consumption not required"));
+    }
+}
+
+bool ABaseWeapon::HaveAmmoToShoot() const
+{
+        if (CurrentAmmo > 0)
+        {
+            UE_LOG(LogBaseWeapon, Warning, TEXT("Have enough ammo"));
+        }
+        else
+        {
+            UE_LOG(LogBaseWeapon, Error, TEXT("Don't have enough ammo"));
+        }
+
+        return CurrentAmmo > 0;
 }

@@ -7,6 +7,8 @@ void ARifleWeapon::StartFire()
 {
 
     TriggerPulled = true;
+    if (!Super::HaveAmmoToShoot())
+        return;
     if (AutoFireAvailable)
     {
         GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARifleWeapon::MakeShot, WeaponRateOfFire, TriggerPulled,
@@ -34,7 +36,10 @@ void ARifleWeapon::MakeShot()
     FVector TraceEnd;
     if (!GetTraceData(TraceStart, TraceEnd))
         return;
+    if (!Super::HaveAmmoToShoot())
+        return;
     FHitResult HitResult;
+    Super::MakeShot();
     MakeHit(HitResult, TraceStart, TraceEnd);
 
     if (HitResult.bBlockingHit)

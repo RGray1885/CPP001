@@ -7,6 +7,8 @@
 
 void ALauncherWeapon::StartFire()
 {
+    if (!Super::HaveAmmoToShoot())
+        return;
     MakeShot();
 }
 
@@ -20,6 +22,8 @@ void ALauncherWeapon::MakeShot()
         return;
     FHitResult HitResult;
     MakeHit(HitResult, TraceStart, TraceEnd);
+    Super::MakeShot();
+
     const FVector EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
     const FVector Direction = (EndPoint - GetMuzzleLocation()).GetSafeNormal();
     const FTransform SpawnTransform(FRotator::ZeroRotator, GetMuzzleLocation());
