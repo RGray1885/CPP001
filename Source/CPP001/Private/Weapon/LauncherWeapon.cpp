@@ -7,7 +7,7 @@
 
 void ALauncherWeapon::StartFire()
 {
-    if (!Super::HaveAmmoToShoot())
+    if (Super::HaveNoAmmoToShoot())
         return;
     MakeShot();
 }

@@ -7,7 +7,7 @@ void ARifleWeapon::StartFire()
 {
 
     TriggerPulled = true;
-    if (!Super::HaveAmmoToShoot())
+    if (Super::HaveNoAmmoToShoot())
         return;
     if (AutoFireAvailable)
     {
@@ -35,8 +35,6 @@ void ARifleWeapon::MakeShot()
     FVector TraceStart;                         
     FVector TraceEnd;
     if (!GetTraceData(TraceStart, TraceEnd))
-        return;
-    if (!Super::HaveAmmoToShoot())
         return;
     FHitResult HitResult;
     Super::MakeShot();
