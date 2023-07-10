@@ -7,7 +7,7 @@ void ARifleWeapon::StartFire()
 {
 
     TriggerPulled = true;
-    if (Super::HaveNoAmmoToShoot())
+    if (Super::HaveNoAmmoToShoot()||Super::IsClipEmpty())
         return;
     if (AutoFireAvailable)
     {
@@ -28,6 +28,9 @@ void ARifleWeapon::StopFire()
 
 void ARifleWeapon::MakeShot()
 {
+    if (Super::HaveNoAmmoToShoot()||Super::IsClipEmpty())
+        return;
+    UE_LOG(LogTemp, Error, TEXT("Making Shot"));
     if (!TriggerPulled)
         return;
     if (!GetWorld())

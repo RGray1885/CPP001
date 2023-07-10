@@ -79,6 +79,7 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAction("FireWeapon", IE_Pressed, WeaponComponent, &UWeaponComponent::FireWeapon);
     PlayerInputComponent->BindAction("FireWeapon", IE_Released, WeaponComponent, &UWeaponComponent::StopFiring);
     PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, WeaponComponent, &UWeaponComponent::NextWeapon);
+    PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UWeaponComponent::Reload);
 
 }
 

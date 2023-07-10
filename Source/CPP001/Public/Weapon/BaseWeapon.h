@@ -57,7 +57,15 @@ public:
 public:
   virtual void StartFire();
   virtual void StopFire();
-  
+  void Reload();
+  bool ShouldReload()
+  {
+      return IsClipEmpty();
+  }
+  bool HaveAnyAmmo()
+  {
+      return !HaveNoAmmoToShoot();
+  }
   
 
 protected:
@@ -71,7 +79,14 @@ protected:
   //void AmmoConsumption();
   void ConsumeAmmo();
   bool HaveNoAmmoToShoot() const;
-  bool IsClipEmpty() const;
+  bool IsClipNotFull() const
+  {
+      return CurrentAmmo.ClipSize < DefaultAmmo.ClipSize;
+  }
+  bool IsClipEmpty() const
+  {
+      return CurrentAmmo.ClipSize == 0;
+  }
   void ReloadClip();
   void LogAmmo();
 

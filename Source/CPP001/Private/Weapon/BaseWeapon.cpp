@@ -52,6 +52,8 @@ void ABaseWeapon::StopFire()
 
 
 
+
+
 void ABaseWeapon::MakeShot()
 {
     /* if (!TriggerPulled)
@@ -123,11 +125,14 @@ void ABaseWeapon::MakeHit(FHitResult &HitResult, const FVector &TraceStart, cons
 void ABaseWeapon::ConsumeAmmo()
 {
     CurrentAmmo.ClipSize-=CurrentAmmo.AmmoPerShotConsumption;
+    if (IsClipEmpty())
+        return;
+    
     LogAmmo();
-    if (IsClipEmpty()&&!HaveNoAmmoToShoot())
-    {
-        ReloadClip();
-    }
+    //if (IsClipEmpty()&&!HaveNoAmmoToShoot())
+    //{
+    //    ReloadClip();
+    //}
 }
 /* bool ABaseWeapon::HaveAmmoToShoot() const
 {
@@ -149,10 +154,10 @@ bool ABaseWeapon::HaveNoAmmoToShoot() const
     
 }
 
-bool ABaseWeapon::IsClipEmpty() const
-{
-        return CurrentAmmo.ClipSize==0;
-}
+//bool ABaseWeapon::IsClipNotFull() const
+//{
+  //      return CurrentAmmo.ClipSize<DefaultAmmo.ClipSize;
+//}
 
 void ABaseWeapon::ReloadClip()
 {
@@ -162,7 +167,7 @@ void ABaseWeapon::ReloadClip()
         UE_LOG(LogBaseWeapon, Display, TEXT("Infinite ammo, reload successful"));
 
     }
-    else if (CurrentAmmo.TotalAmmo >= DefaultAmmo.ClipSize && !CurrentAmmo.HasInfiniteAmmo)
+    else if (CurrentAmmo.TotalAmmo >= DefaultAmmo.ClipSize && IsClipEmpty())
     {
         CurrentAmmo.ClipSize = DefaultAmmo.ClipSize;
         CurrentAmmo.TotalAmmo -= DefaultAmmo.ClipSize;
@@ -170,12 +175,26 @@ void ABaseWeapon::ReloadClip()
 
 
     }
-    else if (CurrentAmmo.TotalAmmo < DefaultAmmo.ClipSize && !CurrentAmmo.HasInfiniteAmmo)
+    else if (CurrentAmmo.TotalAmmo < DefaultAmmo.ClipSize && IsClipEmpty())
     {
         CurrentAmmo.ClipSize = CurrentAmmo.TotalAmmo;
         CurrentAmmo.TotalAmmo = 0;
         UE_LOG(LogBaseWeapon, Warning, TEXT("Not enough ammo for full clip, reload successful"));
 
+    }
+    else if (CurrentAmmo.TotalAmmo >= (DefaultAmmo.ClipSize - CurrentAmmo.ClipSize)&&IsClipNotFull())
+    {
+        CurrentAmmo.TotalAmmo -= (DefaultAmmo.ClipSize - CurrentAmmo.ClipSize);
+        CurrentAmmo.ClipSize = DefaultAmmo.ClipSize;
+    }
+    else if (CurrentAmmo.TotalAmmo < (DefaultAmmo.ClipSize - CurrentAmmo.ClipSize) && IsClipNotFull())
+    {
+        CurrentAmmo.ClipSize += CurrentAmmo.TotalAmmo;
+        CurrentAmmo.TotalAmmo = 0;
+    }
+    else if (CurrentAmmo.ClipSize == DefaultAmmo.ClipSize)
+    {
+        return;
     }
     
     LogAmmo();
@@ -186,4 +205,11 @@ void ABaseWeapon::LogAmmo()
         FString AmmoInfoLog = "Ammo: " + FString::FromInt(CurrentAmmo.ClipSize) + "/";
         AmmoInfoLog += CurrentAmmo.HasInfiniteAmmo ? "Infinite" : FString::FromInt(CurrentAmmo.TotalAmmo);
         UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfoLog);
+}
+
+
+void ABaseWeapon::Reload()
+{
+        if (!HaveNoAmmoToShoot())
+        ReloadClip();
 }

@@ -7,6 +7,17 @@
 #include "WeaponComponent.generated.h"
 
 class ABaseWeapon;
+
+USTRUCT(BlueprintType)
+struct FWeaponData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    TSubclassOf<ABaseWeapon> WeaponClass;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
+    UAnimMontage *ReloadAnimMontage;
+};
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CPP001_API UWeaponComponent : public UActorComponent
 {
@@ -19,7 +30,7 @@ class CPP001_API UWeaponComponent : public UActorComponent
   protected:
     // Called when the game starts
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TArray<TSubclassOf<ABaseWeapon>> WeaponClasses;
+    TArray<FWeaponData> WeaponData;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName WeaponEquipSocketName = "WeaponSocket";
@@ -36,6 +47,8 @@ class CPP001_API UWeaponComponent : public UActorComponent
     ABaseWeapon *CurrentWeapon = nullptr; //property for weapon in hand
     UPROPERTY()
     TArray<ABaseWeapon *> Weapons; //array for weapon in possession
+    UPROPERTY()
+    UAnimMontage *CurrentReloadAnimMontage = nullptr;
 
     int32 CurrentWeaponIndex = 0;
 
@@ -46,10 +59,28 @@ class CPP001_API UWeaponComponent : public UActorComponent
     void InitAnimations();
     void OnEquipFinished(USkeletalMeshComponent*MeshComponent);
     void OnEquipStart(USkeletalMeshComponent *MeshComponent);
+    void OnReloadFinished(USkeletalMeshComponent *MeshComponent);
     bool EquipInProgress;
+    bool ReloadInProgress;
     bool CanFire() const;
     bool CanEquip() const;
     bool IsFiring;
+    template<typename T>
+    T* FindNotifyByClass(UAnimSequenceBase* Animation)
+    {
+        if (!Animation)
+            return nullptr;
+        const auto NotifyEvents = Animation->Notifies;
+        for (auto NotifyEvent : NotifyEvents)
+        {
+            auto AnimNotify = Cast<T>(NotifyEvent.Notify); 
+            if (AnimNotify)                                
+            {
+                return AnimNotify;
+            }
+        }
+        return nullptr;
+    }
   
   public:
     void FireWeapon();
@@ -59,6 +90,7 @@ class CPP001_API UWeaponComponent : public UActorComponent
     {
         return IsFiring;
     }
+    void Reload();
    
   
    
