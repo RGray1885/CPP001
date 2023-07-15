@@ -4,17 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ProjectCoreTypes.h"
 #include "BaseWeapon.generated.h"
+//DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
 
-class USkeletalMeshComponent;
-USTRUCT(BlueprintType)
+/* USTRUCT(BlueprintType)                                                                               //Moved to ProjectCoreTypes.h
 struct FAmmoData
 {
     GENERATED_USTRUCT_BODY()
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo", meta = (EditCondition = "!NoReload"))
     int32 ClipSize;
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo",meta=(EditCondition="!HasInfiniteAmmo"))
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo", meta = (EditCondition = "!HasInfiniteAmmo"))
     int32 TotalAmmo;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
     bool HasInfiniteAmmo = false;
@@ -22,16 +23,18 @@ struct FAmmoData
     bool NoReload = false;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
     int32 AmmoPerShotConsumption;
-
-};
+};*/
+class USkeletalMeshComponent;
 UCLASS()
 class CPP001_API ABaseWeapon : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+  
+
+  public:	
 	// Sets default values for this actor's properties
 	ABaseWeapon();
+  FOnClipEmptySignature OnClipEmpty;
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,7 +51,7 @@ protected:
   FAmmoData DefaultAmmo{15, 150, false, false,1};
  
   
-
+ 
 
 public:	
 	// Called every frame
@@ -64,13 +67,14 @@ public:
   }
   bool HaveAnyAmmo()
   {
-      return !HaveNoAmmoToShoot();
+      return !HaveNoAmmoToShoot()&& CurrentAmmo.TotalAmmo!=0;
   }
   
 
 protected:
   virtual void MakeShot();
   virtual bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const;
+
 
   APlayerController *ABaseWeapon::GetPlayerController() const;
   bool GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const;
@@ -90,7 +94,7 @@ protected:
   void ReloadClip();
   void LogAmmo();
 
-private:
+  private:
   FAmmoData CurrentAmmo;
 
 

@@ -4,11 +4,12 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "ProjectCoreTypes.h"
 #include "WeaponComponent.generated.h"
 
 class ABaseWeapon;
 
-USTRUCT(BlueprintType)
+/* USTRUCT(BlueprintType)                   //Moved to ProjectCoreTypes.h
 struct FWeaponData
 {
     GENERATED_USTRUCT_BODY()
@@ -17,7 +18,9 @@ struct FWeaponData
     TSubclassOf<ABaseWeapon> WeaponClass;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
     UAnimMontage *ReloadAnimMontage;
-};
+};*/
+
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class CPP001_API UWeaponComponent : public UActorComponent
 {
@@ -65,22 +68,9 @@ class CPP001_API UWeaponComponent : public UActorComponent
     bool CanFire() const;
     bool CanEquip() const;
     bool IsFiring;
-    template<typename T>
-    T* FindNotifyByClass(UAnimSequenceBase* Animation)
-    {
-        if (!Animation)
-            return nullptr;
-        const auto NotifyEvents = Animation->Notifies;
-        for (auto NotifyEvent : NotifyEvents)
-        {
-            auto AnimNotify = Cast<T>(NotifyEvent.Notify); 
-            if (AnimNotify)                                
-            {
-                return AnimNotify;
-            }
-        }
-        return nullptr;
-    }
+   
+    void OnEmptyClip();
+
   
   public:
     void FireWeapon();

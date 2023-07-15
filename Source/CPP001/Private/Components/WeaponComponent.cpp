@@ -7,9 +7,12 @@
 #include "Animations/EquipFinishedAnimNotify.h"
 #include "Animations/EquipStartAnimNotify.h"
 #include "Animations/ReloadFinishedAnimNotify.h"
+#include "Animations/AnimUtils.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
+
+const static int32 WeaponNum = 2;
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -26,13 +29,18 @@ UWeaponComponent::UWeaponComponent()
 void UWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+    checkf(WeaponData.Num() == WeaponNum, TEXT("Should be two weapons, no less, no more"));
     CurrentWeaponIndex = 0;
     InitAnimations();
     SpawnWeapons();
     EquipWeapon(CurrentWeaponIndex);
 	// ...
 	
+}
+
+void UWeaponComponent::OnEmptyClip()
+{
+    Reload();
 }
 
 void UWeaponComponent::FireWeapon()
@@ -42,15 +50,18 @@ void UWeaponComponent::FireWeapon()
         return;
     //auto Player = Cast<ABaseCharacter> (CurrentWeapon->GetOwner()); //to prevent fire
     //if (!Player->GetIsRunning())                                    //during sprint or weapon change
-    if (CurrentWeapon->ShouldReload())
-    {
-        UWeaponComponent::Reload();
-    }
-    else
-    {
+   // if (CurrentWeapon->ShouldReload())
+    //{
+      //  UWeaponComponent::Reload();
+    //}
+    //else
+    //{
+   
         CurrentWeapon->StartFire();
         IsFiring = true;
-    }
+   
+        
+    //}
     
     //if (CurrentWeapon->)
 }
@@ -101,7 +112,6 @@ void UWeaponComponent::EquipWeapon(int32 WeaponIndex)
     PlayAnimMontage(EquipAnimMontage);
     
     
-    
 }
 
 
@@ -116,6 +126,7 @@ void UWeaponComponent::SpawnWeapons()                                           
     auto Weapon = GetWorld()->SpawnActor<ABaseWeapon>(OneWeaponData.WeaponClass);                        //spawn actor of class ABaseWeapon
         if (!Weapon)
             continue;
+        Weapon->OnClipEmpty.AddUObject(this, &UWeaponComponent::OnEmptyClip);
         Weapon->SetOwner(OwnerCharacter);                                                   //set weapon's owner
         Weapons.Add(Weapon);                                                                //add to weapons array
         AttachWeaponToSocket(Weapon, OwnerCharacter->GetMesh(), WeaponArmorySocketName);    //attach on back
@@ -164,24 +175,35 @@ void UWeaponComponent::PlayAnimMontage(UAnimMontage *Animation)
 
 void UWeaponComponent::InitAnimations()
 {
-    auto EquipStartNotify = FindNotifyByClass<UEquipStartAnimNotify>(EquipAnimMontage);
+    auto EquipStartNotify = AnimUtils::FindNotifyByClass<UEquipStartAnimNotify>(EquipAnimMontage);
     if (EquipStartNotify)
     {
         EquipStartNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipStart);
     }
-    auto EquipFinishedNotify = FindNotifyByClass<UEquipFinishedAnimNotify>(EquipAnimMontage);
+    else
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("EquipAnimNotify is not set"));
+        checkNoEntry();
+    }
+    auto EquipFinishedNotify = AnimUtils::FindNotifyByClass<UEquipFinishedAnimNotify>(EquipAnimMontage);
     if (EquipFinishedNotify)
     {
         EquipFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnEquipFinished);
     }
+    else
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("EquipAnimNotify is not set"));
+    }
     for (auto OneWeaponData : WeaponData)
     {
-        auto ReloadFinishedNotify = FindNotifyByClass<UReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
+        auto ReloadFinishedNotify = AnimUtils::FindNotifyByClass<UReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
         if (!ReloadFinishedNotify)
-            continue;
         {
-            ReloadFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnReloadFinished);
+            UE_LOG(LogWeaponComponent, Error, TEXT("ReloadAnimNotify is not set"));
+            checkNoEntry();
         }
+            ReloadFinishedNotify->OnNotified.AddUObject(this, &UWeaponComponent::OnReloadFinished);
+        
     }
    
 }
@@ -228,10 +250,15 @@ bool UWeaponComponent::CanEquip() const
 
 void UWeaponComponent::Reload()
 {
-        if (CanEquip() && !ReloadInProgress&&CurrentWeapon->HaveAnyAmmo())
+        if (CanEquip() && !ReloadInProgress && CurrentWeapon->HaveAnyAmmo())
         {
+        StopFiring();
         PlayAnimMontage(CurrentReloadAnimMontage);
         ReloadInProgress = true;
+        }
+        else
+        {
+        UE_LOG(LogWeaponComponent, Error, TEXT("No more ammo to reload"));
         }
 }
 

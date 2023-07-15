@@ -4,10 +4,11 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "ProjectCoreTypes.h"
 #include "HealthComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float);
+//DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);            //Moved to ProjectCoreTypes.h
+//DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float);
 
     UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent)) class CPP001_API UHealthComponent
     : public UActorComponent

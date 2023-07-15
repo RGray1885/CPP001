@@ -24,6 +24,8 @@ void ABaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
     check(WeaponMesh);
+    checkf(DefaultAmmo.ClipSize > 0, TEXT("Ammo in clip should be greater than zero"));
+    checkf(DefaultAmmo.TotalAmmo > 0, TEXT("Ammo in total should be greater than zero"));
     CurrentAmmo = DefaultAmmo;
 }
 
@@ -56,7 +58,7 @@ void ABaseWeapon::StopFire()
 
 void ABaseWeapon::MakeShot()
 {
-    /* if (!TriggerPulled)
+   /* if (!TriggerPulled)
         return;
     if(!GetWorld()) return;
     FVector TraceStart;
@@ -126,7 +128,11 @@ void ABaseWeapon::ConsumeAmmo()
 {
     CurrentAmmo.ClipSize-=CurrentAmmo.AmmoPerShotConsumption;
     if (IsClipEmpty())
-        return;
+    {
+        UE_LOG(LogBaseWeapon, Warning, TEXT("Empty Clip"));
+        OnClipEmpty.Broadcast();
+    }
+    
     
     LogAmmo();
     //if (IsClipEmpty()&&!HaveNoAmmoToShoot())
@@ -150,7 +156,12 @@ void ABaseWeapon::ConsumeAmmo()
 
 bool ABaseWeapon::HaveNoAmmoToShoot() const
 {
+    if (CurrentAmmo.TotalAmmo == 0 && IsClipEmpty())
+    {
+        UE_LOG(LogBaseWeapon, Error, TEXT("Have no ammo"));
+    }
         return CurrentAmmo.TotalAmmo==0 && !CurrentAmmo.HasInfiniteAmmo && IsClipEmpty();
+    
     
 }
 
