@@ -14,3 +14,4 @@ Packaged
 *.suo
 *.xcodeproj
 *.xcworkspace
+/Content/Maps/TestMap_BuiltData.uasset
