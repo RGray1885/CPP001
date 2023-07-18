@@ -49,7 +49,8 @@ protected:
   float DamagePerHit = 2.0f;
   UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Firing")
   FAmmoData DefaultAmmo{15, 150, false, false,1};
- 
+  UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+  FWeaponUIData UIData;
   
  
 
@@ -68,6 +69,10 @@ public:
   bool HaveAnyAmmo()
   {
       return !HaveNoAmmoToShoot()&& CurrentAmmo.TotalAmmo!=0;
+  }
+  FWeaponUIData GetUIData() const
+  {
+      return UIData;
   }
   
 

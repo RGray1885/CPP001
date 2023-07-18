@@ -27,6 +27,11 @@
     {
         return Health <= 0;
     }
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    float GetHealthPercentage() const
+    {
+        return Health / MaxHealth;
+    }
 
     FOnDeathSignature OnDeath;
     FOnHealthChangedSignature OnHealthChanged;

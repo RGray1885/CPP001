@@ -262,6 +262,16 @@ void UWeaponComponent::Reload()
         }
 }
 
+bool UWeaponComponent::GetWeaponUIData(FWeaponUIData &UIData) const
+{
+        if (CurrentWeapon)
+        {
+        UIData = CurrentWeapon->GetUIData();
+        return true;
+        }
+        return false;
+}
+
 void UWeaponComponent::OnReloadFinished(USkeletalMeshComponent *MeshComponent)
 {
         ACharacter *OwnerCharacter = Cast<ACharacter>(GetOwner());

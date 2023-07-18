@@ -81,6 +81,8 @@ class CPP001_API UWeaponComponent : public UActorComponent
         return IsFiring;
     }
     void Reload();
+
+    bool GetWeaponUIData(FWeaponUIData &UIData) const;
    
   
    
