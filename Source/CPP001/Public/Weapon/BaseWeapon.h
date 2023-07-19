@@ -74,6 +74,7 @@ public:
   {
       return UIData;
   }
+  FString GetCurrentAmmo() const;
   
 
 protected:

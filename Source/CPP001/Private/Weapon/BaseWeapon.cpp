@@ -1,4 +1,4 @@
-// Trying to make a simple game using c++ and a lot of help
+﻿// Trying to make a simple game using c++ and a lot of help
 
 
 #include "Weapon/BaseWeapon.h"
@@ -50,6 +50,8 @@ void ABaseWeapon::StopFire()
     /* TriggerPulled = false;
     GetWorld()->GetTimerManager().ClearTimer(ShotTimer);*/
 }
+
+
 
 
 
@@ -223,4 +225,13 @@ void ABaseWeapon::Reload()
 {
         if (!HaveNoAmmoToShoot())
         ReloadClip();
+}
+
+FString ABaseWeapon::GetCurrentAmmo() const
+{
+        FString InfAmmo = FString(TEXT("\u221e"));
+        FString AmmoUI = FString::FromInt(CurrentAmmo.ClipSize) + "/";
+        AmmoUI += CurrentAmmo.HasInfiniteAmmo ? InfAmmo : FString::FromInt(CurrentAmmo.TotalAmmo);
+        auto AmmoText = FText::FromString(AmmoUI);
+        return AmmoUI;
 }

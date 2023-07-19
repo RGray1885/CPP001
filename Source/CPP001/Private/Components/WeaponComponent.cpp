@@ -281,3 +281,12 @@ void UWeaponComponent::OnReloadFinished(USkeletalMeshComponent *MeshComponent)
         CurrentWeapon->Reload();   
     ReloadInProgress = false;
 }
+bool UWeaponComponent::GetAmmoUIData(FString &AmmoData) const
+{
+    if (CurrentWeapon)
+    {
+    AmmoData = CurrentWeapon->GetCurrentAmmo();
+    return true;
+    }
+    return false;
+}

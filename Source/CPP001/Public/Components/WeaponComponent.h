@@ -83,6 +83,7 @@ class CPP001_API UWeaponComponent : public UActorComponent
     void Reload();
 
     bool GetWeaponUIData(FWeaponUIData &UIData) const;
+    bool GetAmmoUIData(FString &AmmoData) const;
    
   
    
