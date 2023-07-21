@@ -22,14 +22,9 @@ float UPlayerHUDWidget::GetHealthPercentage() const
 
 }
 
-bool UPlayerHUDWidget::GetWeaponUIData(FWeaponUIData &UIData) const
+/* bool UPlayerHUDWidget::GetWeaponUIData(FWeaponUIData &UIData) const
 {
-    const auto Player = GetOwningPlayerPawn();
-    if (!Player)return false;
-    
-    const auto Component = Player->GetComponentByClass(UWeaponComponent::StaticClass());
-    const auto WeaponComponent = Cast<UWeaponComponent>(Component);
-    
+    const auto WeaponComponent = GetWeaponComponent();
     if (WeaponComponent)
     {
     return WeaponComponent->GetWeaponUIData(UIData);
@@ -41,13 +36,7 @@ bool UPlayerHUDWidget::GetWeaponUIData(FWeaponUIData &UIData) const
 
 bool UPlayerHUDWidget::GetAmmoUIData(FString &AmmoData) const
 {
-    const auto Player = GetOwningPlayerPawn();
-    if (!Player)
-    return false;
-
-    const auto Component = Player->GetComponentByClass(UWeaponComponent::StaticClass());
-    const auto WeaponComponent = Cast<UWeaponComponent>(Component);
-
+    const auto WeaponComponent=GetWeaponComponent();
     if (WeaponComponent)
     {
     return WeaponComponent->GetAmmoUIData(AmmoData);
@@ -55,3 +44,29 @@ bool UPlayerHUDWidget::GetAmmoUIData(FString &AmmoData) const
     else
     return false;
 }
+*/
+bool UPlayerHUDWidget::GetCurrentWeaponAmmoUIData(FWeaponUIData &UIData, FString &AmmoData) const              // use one function for weapon data to display
+{
+    const auto WeaponComponent = GetCurrentWeaponComponent();
+    if (WeaponComponent)
+    {
+    return WeaponComponent->GetWeaponAmmoUIData(UIData,AmmoData);
+    }
+    else
+    return false;
+}
+
+UWeaponComponent *UPlayerHUDWidget::GetCurrentWeaponComponent() const
+{
+    const auto Player = GetOwningPlayerPawn();
+    if (!Player)
+    return nullptr;
+
+    const auto Component = Player->GetComponentByClass(UWeaponComponent::StaticClass());
+    const auto WeaponComponent = Cast<UWeaponComponent>(Component);
+    return WeaponComponent;
+}
+
+
+
+

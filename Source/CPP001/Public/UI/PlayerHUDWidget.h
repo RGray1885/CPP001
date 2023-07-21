@@ -16,8 +16,14 @@ class CPP001_API UPlayerHUDWidget : public UUserWidget
   public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     float GetHealthPercentage() const;
+    //UFUNCTION(BlueprintCallable, Category = "UI")
+    //bool GetWeaponUIData(FWeaponUIData &UIData) const;
+    //UFUNCTION(BlueprintCallable, Category = "UI")
+    //bool GetAmmoUIData(FString &AmmoUIData) const;
+    
     UFUNCTION(BlueprintCallable, Category = "UI")
-    bool GetWeaponUIData(FWeaponUIData &UIData) const;
-    UFUNCTION(BlueprintCallable, Category = "UI")
-    bool GetAmmoUIData(FString &AmmoUIData) const;
+    bool GetCurrentWeaponAmmoUIData(FWeaponUIData &UIData, FString &AmmoUIData) const;
+
+  protected:
+    UWeaponComponent* GetCurrentWeaponComponent()const;
 };

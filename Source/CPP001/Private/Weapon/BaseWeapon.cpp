@@ -232,6 +232,5 @@ FString ABaseWeapon::GetCurrentAmmo() const
         FString InfAmmo = FString(TEXT("\u221e"));
         FString AmmoUI = FString::FromInt(CurrentAmmo.ClipSize) + "/";
         AmmoUI += CurrentAmmo.HasInfiniteAmmo ? InfAmmo : FString::FromInt(CurrentAmmo.TotalAmmo);
-        auto AmmoText = FText::FromString(AmmoUI);
         return AmmoUI;
 }

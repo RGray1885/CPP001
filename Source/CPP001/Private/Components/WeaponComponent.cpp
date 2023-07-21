@@ -290,3 +290,14 @@ bool UWeaponComponent::GetAmmoUIData(FString &AmmoData) const
     }
     return false;
 }
+
+bool UWeaponComponent::GetWeaponAmmoUIData(FWeaponUIData &UIData, FString &AmmoData) const
+{
+    if (CurrentWeapon)
+    {
+    UIData = CurrentWeapon->GetUIData();
+    AmmoData = CurrentWeapon->GetCurrentAmmo();
+    return true;
+    }
+    return false;
+}

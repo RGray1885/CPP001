@@ -63,13 +63,14 @@ class CPP001_API UWeaponComponent : public UActorComponent
     void OnEquipFinished(USkeletalMeshComponent*MeshComponent);
     void OnEquipStart(USkeletalMeshComponent *MeshComponent);
     void OnReloadFinished(USkeletalMeshComponent *MeshComponent);
+    void OnEmptyClip();
+    
     bool EquipInProgress;
     bool ReloadInProgress;
     bool CanFire() const;
     bool CanEquip() const;
     bool IsFiring;
    
-    void OnEmptyClip();
 
   
   public:
@@ -84,6 +85,7 @@ class CPP001_API UWeaponComponent : public UActorComponent
 
     bool GetWeaponUIData(FWeaponUIData &UIData) const;
     bool GetAmmoUIData(FString &AmmoData) const;
+    bool GetWeaponAmmoUIData(FWeaponUIData &UIData, FString &AmmoData) const;
    
   
    
