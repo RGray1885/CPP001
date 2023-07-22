@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUDWidget.generated.h"
 
+
+class UWeaponComponent;
+class UHealthComponent;
 /**
  * 
  */
@@ -23,7 +26,11 @@ class CPP001_API UPlayerHUDWidget : public UUserWidget
     
     UFUNCTION(BlueprintCallable, Category = "UI")
     bool GetCurrentWeaponAmmoUIData(FWeaponUIData &UIData, FString &AmmoUIData) const;
-
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    bool IsPlayerAlive() const;
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    bool IsPlayerSpectating() const;
   protected:
     UWeaponComponent* GetCurrentWeaponComponent()const;
+    UHealthComponent* GetHealthComponent() const;
 };

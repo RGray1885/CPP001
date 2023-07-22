@@ -5,17 +5,17 @@
 #include "HealthComponent.h"
 #include "WeaponComponent.h"
 #include "ProjectCoreTypes.h"
+#include "ProjectUtils.h"
 
 
 
 float UPlayerHUDWidget::GetHealthPercentage() const
 {
-    const auto Player = GetOwningPlayerPawn();
-    if (!Player)
-        return 0.0f;
+    //const auto Player = GetOwningPlayerPawn();
+    //if (!Player)
+      //  return 0.0f;
 
-    const auto Component = Player->GetComponentByClass(UHealthComponent::StaticClass());
-    const auto HealthComponent = Cast<UHealthComponent>(Component);
+    const auto HealthComponent = ProjectUtils::GetPlayerComponent<UHealthComponent>(GetOwningPlayerPawn());
     if (!HealthComponent)
         return 0.0f;
     return HealthComponent->GetHealthPercentage();
@@ -47,7 +47,8 @@ bool UPlayerHUDWidget::GetAmmoUIData(FString &AmmoData) const
 */
 bool UPlayerHUDWidget::GetCurrentWeaponAmmoUIData(FWeaponUIData &UIData, FString &AmmoData) const              // use one function for weapon data to display
 {
-    const auto WeaponComponent = GetCurrentWeaponComponent();
+    const auto WeaponComponent =
+        ProjectUtils::GetPlayerComponent<UWeaponComponent>(GetOwningPlayerPawn()); // GetCurrentWeaponComponent();
     if (WeaponComponent)
     {
     return WeaponComponent->GetWeaponAmmoUIData(UIData,AmmoData);
@@ -56,16 +57,54 @@ bool UPlayerHUDWidget::GetCurrentWeaponAmmoUIData(FWeaponUIData &UIData, FString
     return false;
 }
 
-UWeaponComponent *UPlayerHUDWidget::GetCurrentWeaponComponent() const
+bool UPlayerHUDWidget::IsPlayerAlive() const
 {
-    const auto Player = GetOwningPlayerPawn();
-    if (!Player)
-    return nullptr;
-
-    const auto Component = Player->GetComponentByClass(UWeaponComponent::StaticClass());
-    const auto WeaponComponent = Cast<UWeaponComponent>(Component);
-    return WeaponComponent;
+    const auto HealthComponent =
+        ProjectUtils::GetPlayerComponent<UHealthComponent>(GetOwningPlayerPawn()); // GetHealthComponent();
+    return HealthComponent&&!HealthComponent->IsDead();
+    //return false;
 }
+
+bool UPlayerHUDWidget::IsPlayerSpectating() const
+{
+    const auto Controller = GetOwningPlayer();
+    return Controller&&Controller->GetStateName()==NAME_Spectating;
+}
+
+/* UWeaponComponent *UPlayerHUDWidget::GetCurrentWeaponComponent() const
+{
+    //const auto Player = GetOwningPlayerPawn();
+    //if (!Player)
+    //return nullptr;
+
+    //const auto Component = Player->GetComponentByClass(UWeaponComponent::StaticClass());
+    //const auto WeaponComponent = Cast<UWeaponComponent>(Component);
+    const auto WeaponComponent = ProjectUtils::GetPlayerComponent<UWeaponComponent>(GetOwningPlayerPawn());
+    if (WeaponComponent)
+    {
+    return WeaponComponent;
+    }
+    else
+    return nullptr;
+    
+}
+
+UHealthComponent *UPlayerHUDWidget::GetHealthComponent() const
+{
+    //const auto Player = GetOwningPlayerPawn();
+    
+    //if (!Player)
+    //return nullptr;
+    const auto Component = ProjectUtils::GetPlayerComponent<UHealthComponent>(
+        GetOwningPlayerPawn()); // Player->GetComponentByClass(UHealthComponent::StaticClass());
+    const auto HealthComponent = Cast<UHealthComponent>(Component);
+    if (HealthComponent)
+    {
+    return HealthComponent;
+    }
+    else
+    return nullptr;
+}*/
 
 
 
