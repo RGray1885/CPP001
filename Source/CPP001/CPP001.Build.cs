@@ -18,7 +18,8 @@ public class CPP001 : ModuleRules
 			"CPP001/Public/Dev", 
 			"CPP001/Public/Weapon",
 			"CPP001/Public/UI",
-			"CPP001/Public/Animations"
+			"CPP001/Public/Animations",
+			"CPP001/Public/Pickups"
 		});
 
 		// Uncomment if you are using Slate UI

@@ -59,6 +59,12 @@
 
     //void DepleteHealth(float Amount);
 
+    bool ShouldHeal() const
+    {
+        return bShouldHeal;
+    }
+    void HealFromMedkit(float HealAmount);
+
   private:
     float Health = 0;
     FTimerHandle HealTimer;
