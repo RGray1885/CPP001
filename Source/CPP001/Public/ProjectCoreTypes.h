@@ -4,6 +4,7 @@
 //weapon
 DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
 class ABaseWeapon;
+
 USTRUCT(BlueprintType)
 struct FAmmoData
 {
@@ -45,4 +46,14 @@ struct FWeaponUIData
     UTexture2D *MainIcon;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     UTexture2D *CrosshairIcon;
+};
+USTRUCT(BlueprintType)
+struct FAmmoPickupData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    TSubclassOf<ABaseWeapon> WeaponClass;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    int32 Amount;
 };

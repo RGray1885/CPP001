@@ -301,3 +301,17 @@ bool UWeaponComponent::GetWeaponAmmoUIData(FWeaponUIData &UIData, FString &AmmoD
     }
     return false;
 }
+
+TSubclassOf<ABaseWeapon> UWeaponComponent::GetWeapon(TSubclassOf<ABaseWeapon> Weapon) const
+{
+    //int32 foundindex;
+    //auto findweapon = Weapons.Find;
+    UE_LOG(LogWeaponComponent, Warning, TEXT("Weapon class"));
+    const auto CurrentWeaponClass = CurrentWeapon->GetClass();
+    if (Weapon == CurrentWeaponClass)
+    return CurrentWeaponClass;
+    else
+    return nullptr;
+}
+
+
