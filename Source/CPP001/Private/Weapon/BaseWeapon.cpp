@@ -234,3 +234,18 @@ FString ABaseWeapon::GetCurrentAmmo() const
         AmmoUI += CurrentAmmo.HasInfiniteAmmo ? InfAmmo : FString::FromInt(CurrentAmmo.TotalAmmo);
         return AmmoUI;
 }
+
+bool ABaseWeapon::RefillAmmo(int32 Amount)
+{
+        if (CurrentAmmo.TotalAmmo < DefaultAmmo.TotalAmmo)
+        {
+        CurrentAmmo.TotalAmmo =
+            FMath::Clamp((CurrentAmmo.TotalAmmo + Amount), CurrentAmmo.TotalAmmo, DefaultAmmo.TotalAmmo);
+        return true;
+        }
+        else
+        {
+        UE_LOG(LogBaseWeapon, Error, TEXT("Can't carry anymore ammo"));
+        return false;
+        }
+}

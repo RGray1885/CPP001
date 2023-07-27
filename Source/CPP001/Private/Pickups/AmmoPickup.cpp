@@ -21,7 +21,7 @@ bool AAmmoPickup::GivePickupTo(APawn *PlayerPawn)
         if (FoundWeapon)
         {
             UE_LOG(LogAmmoPickup, Display, TEXT("Weapon Found"));
-            return true;
+            return FoundWeapon->RefillAmmo(AmmoPickup.Amount);
         }
         else
         {

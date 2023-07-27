@@ -64,7 +64,7 @@ public:
   void Reload();
   bool ShouldReload()
   {
-      return IsClipEmpty();
+      return IsClipEmpty()||IsClipNotFull();
   }
   bool HaveAnyAmmo()
   {
@@ -75,6 +75,7 @@ public:
       return UIData;
   }
   FString GetCurrentAmmo() const;
+  bool RefillAmmo(int32 Amount);
   
 
 protected:

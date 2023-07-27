@@ -250,7 +250,7 @@ bool UWeaponComponent::CanEquip() const
 
 void UWeaponComponent::Reload()
 {
-        if (CanEquip() && !ReloadInProgress && CurrentWeapon->HaveAnyAmmo())
+        if (CanEquip() && !ReloadInProgress && CurrentWeapon->HaveAnyAmmo()&&CurrentWeapon->ShouldReload())
         {
         StopFiring();
         PlayAnimMontage(CurrentReloadAnimMontage);
@@ -302,15 +302,31 @@ bool UWeaponComponent::GetWeaponAmmoUIData(FWeaponUIData &UIData, FString &AmmoD
     return false;
 }
 
-TSubclassOf<ABaseWeapon> UWeaponComponent::GetWeapon(TSubclassOf<ABaseWeapon> Weapon) const
+ABaseWeapon* UWeaponComponent::GetWeapon(TSubclassOf<ABaseWeapon> Weapon) const
 {
-    //int32 foundindex;
-    //auto findweapon = Weapons.Find;
     UE_LOG(LogWeaponComponent, Warning, TEXT("Weapon class"));
-    const auto CurrentWeaponClass = CurrentWeapon->GetClass();
-    if (Weapon == CurrentWeaponClass)
-    return CurrentWeaponClass;
+    ABaseWeapon *WeaponObject = nullptr;
+    
+    for (auto OneWeapon : Weapons)
+    {
+    //auto WeaponToRefill = OneWeapon->GetClass();
+    if (OneWeapon->GetClass() == Weapon)
+    {
+            UE_LOG(LogWeaponComponent, Warning, TEXT("Weapon found on player"));
+
+            WeaponObject = OneWeapon;
+            break;
+    }
     else
+    {
+            continue;
+    }
+    }
+    if (WeaponObject)
+    {
+    return WeaponObject;
+    }
+    else 
     return nullptr;
 }
 
