@@ -52,8 +52,8 @@ struct FAmmoPickupData
 {
     GENERATED_USTRUCT_BODY()
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
     TSubclassOf<ABaseWeapon> WeaponClass;
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo", meta=(ClampMin="1.0",ClampMax="45.0"))
     int32 Amount;
 };

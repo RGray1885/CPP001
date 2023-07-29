@@ -13,7 +13,7 @@ bool AAmmoPickup::GivePickupTo(APawn *PlayerPawn)
         UE_LOG(LogAmmoPickup, Display, TEXT("Component Found"));
         if (!AmmoPickup.WeaponClass)
         {
-            UE_LOG(LogAmmoPickup, Display, TEXT("CastFailed"));
+            UE_LOG(LogAmmoPickup, Display, TEXT("Cast failed"));
 
             return false;
         }

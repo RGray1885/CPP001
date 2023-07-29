@@ -22,7 +22,7 @@ class CPP001_API AAmmoPickup : public ABasePickup
     virtual bool GivePickupTo(APawn *PlayerPawn) override;
 
  protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
   FAmmoPickupData AmmoPickup;
 
     
