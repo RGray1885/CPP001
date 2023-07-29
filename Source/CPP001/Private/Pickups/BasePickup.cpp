@@ -19,7 +19,7 @@ ABasePickup::ABasePickup()
     SetRootComponent(CollisionComponent); // CollisionComponent->SetupAttachment(StaticMeshComponent);
     StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
     StaticMeshComponent->SetupAttachment(GetRootComponent());
-    RotatingMovementComponent = CreateDefaultSubobject<URotatingMovementComponent>("RotatingMovementComponent");
+   // RotatingMovementComponent = CreateDefaultSubobject<URotatingMovementComponent>("RotatingMovementComponent");
     
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -31,6 +31,8 @@ void ABasePickup::BeginPlay()
 {
 	Super::BeginPlay();
     check(CollisionComponent);
+
+    GenerateRotationYaw();
 }
 
 void ABasePickup::NotifyActorBeginOverlap(AActor *OtherActor)
@@ -49,7 +51,7 @@ void ABasePickup::NotifyActorBeginOverlap(AActor *OtherActor)
 void ABasePickup::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+    AddActorLocalRotation(FRotator(0.0f, RotationYaw, 0.0f));
 }
 
 bool ABasePickup::GivePickupTo(APawn *PlayerPawn)
@@ -71,10 +73,17 @@ void ABasePickup::PickupTaken()
 
 void ABasePickup::RespawnPickup()
 {
+    GenerateRotationYaw();
     CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
     if (GetRootComponent())
     {
         GetRootComponent()->SetVisibility(true, true);
     }
+}
+
+void ABasePickup::GenerateRotationYaw()
+{
+    const auto Direction = FMath::RandBool() ? 1.0f : -1.0f;
+    RotationYaw = FMath::RandRange(1.0f,2.0f)*Direction;
 }
 

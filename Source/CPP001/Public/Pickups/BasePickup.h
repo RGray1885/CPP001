@@ -24,10 +24,11 @@ protected:
     USphereComponent* CollisionComponent;
     UPROPERTY(VisibleAnywhere, Category = "Pickup")
     UStaticMeshComponent *StaticMeshComponent;
-    UPROPERTY(VisibleAnywhere, Category = "Pickup")
-    URotatingMovementComponent *RotatingMovementComponent;
+    //UPROPERTY(VisibleAnywhere, Category = "Pickup")
+    //URotatingMovementComponent *RotatingMovementComponent;
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
     float RespawnTime=5.0f;
+    float RotationYaw = 0.0f;
 
 	
 	// Called when the game starts or when spawned
@@ -44,4 +45,5 @@ private:
     virtual bool GivePickupTo(APawn *PlayerPawn);
     void PickupTaken();
 	void RespawnPickup();
+    void GenerateRotationYaw();
 };
