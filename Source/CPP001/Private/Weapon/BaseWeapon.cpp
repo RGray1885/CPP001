@@ -197,13 +197,17 @@ void ABaseWeapon::ReloadClip()
     }
     else if (CurrentAmmo.TotalAmmo >= (DefaultAmmo.ClipSize - CurrentAmmo.ClipSize)&&IsClipNotFull())
     {
-        CurrentAmmo.TotalAmmo -= (DefaultAmmo.ClipSize - CurrentAmmo.ClipSize);
+        CurrentAmmo.TotalAmmo = FMath::Clamp((CurrentAmmo.TotalAmmo-(DefaultAmmo.ClipSize - CurrentAmmo.ClipSize)),CurrentAmmo.TotalAmmo,DefaultAmmo.TotalAmmo);
         CurrentAmmo.ClipSize = DefaultAmmo.ClipSize;
+        if (CurrentAmmo.TotalAmmo > DefaultAmmo.TotalAmmo)
+            CurrentAmmo.TotalAmmo = DefaultAmmo.TotalAmmo;
+            UE_LOG(LogBaseWeapon, Warning, TEXT("Total ammo more than clip diff, reload successful"));
     }
     else if (CurrentAmmo.TotalAmmo < (DefaultAmmo.ClipSize - CurrentAmmo.ClipSize) && IsClipNotFull())
     {
         CurrentAmmo.ClipSize += CurrentAmmo.TotalAmmo;
         CurrentAmmo.TotalAmmo = 0;
+        UE_LOG(LogBaseWeapon, Warning, TEXT("Total ammo less than clip diff, reload successful"));
     }
     else if (CurrentAmmo.ClipSize == DefaultAmmo.ClipSize)
     {
@@ -237,10 +241,17 @@ FString ABaseWeapon::GetCurrentAmmo() const
 
 bool ABaseWeapon::RefillAmmo(int32 Amount)
 {
-        if (CurrentAmmo.TotalAmmo < DefaultAmmo.TotalAmmo)
+        if (CurrentAmmo.TotalAmmo < DefaultAmmo.TotalAmmo && !CurrentAmmo.HasInfiniteAmmo&&(!IsClipEmpty() && !IsClipNotFull()))
         {
         CurrentAmmo.TotalAmmo =
             FMath::Clamp((CurrentAmmo.TotalAmmo + Amount), CurrentAmmo.TotalAmmo, DefaultAmmo.TotalAmmo);
+        return true;
+        }
+        else if (CurrentAmmo.TotalAmmo <= DefaultAmmo.TotalAmmo && !CurrentAmmo.HasInfiniteAmmo && (IsClipEmpty() || IsClipNotFull()))
+        {
+        CurrentAmmo.TotalAmmo =
+            FMath::Clamp((CurrentAmmo.TotalAmmo + Amount), CurrentAmmo.TotalAmmo, (DefaultAmmo.TotalAmmo+(FMath::Clamp(Amount,0,DefaultAmmo.ClipSize-CurrentAmmo.ClipSize))));
+        OnClipEmpty.Broadcast();
         return true;
         }
         else
