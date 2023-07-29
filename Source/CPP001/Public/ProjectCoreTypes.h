@@ -2,8 +2,9 @@
 #include "ProjectCoreTypes.generated.h"
 
 //weapon
-DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
 class ABaseWeapon;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature,ABaseWeapon*);
 
 USTRUCT(BlueprintType)
 struct FAmmoData

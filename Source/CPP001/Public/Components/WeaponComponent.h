@@ -63,7 +63,7 @@ class CPP001_API UWeaponComponent : public UActorComponent
     void OnEquipFinished(USkeletalMeshComponent*MeshComponent);
     void OnEquipStart(USkeletalMeshComponent *MeshComponent);
     void OnReloadFinished(USkeletalMeshComponent *MeshComponent);
-    void OnEmptyClip();
+    void OnEmptyClip(ABaseWeapon* AmmoEmptyWeapon);
     
     bool EquipInProgress;
     bool ReloadInProgress;

@@ -38,9 +38,23 @@ void UWeaponComponent::BeginPlay()
 	
 }
 
-void UWeaponComponent::OnEmptyClip()
+void UWeaponComponent::OnEmptyClip(ABaseWeapon *AmmoEmptyWeapon)
 {
-    Reload();
+    if (!AmmoEmptyWeapon)
+        return;
+    if (CurrentWeapon == AmmoEmptyWeapon)
+    {
+        Reload();
+    }
+    else
+    {
+        for (const auto Weapon : Weapons)
+        {
+            if (Weapon == AmmoEmptyWeapon)
+                Weapon->Reload();
+        }
+    }
+    AmmoEmptyWeapon->Reload();
 }
 
 void UWeaponComponent::FireWeapon()

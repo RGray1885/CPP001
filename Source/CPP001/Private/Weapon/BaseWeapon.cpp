@@ -132,7 +132,7 @@ void ABaseWeapon::ConsumeAmmo()
     if (IsClipEmpty())
     {
         UE_LOG(LogBaseWeapon, Warning, TEXT("Empty Clip"));
-        OnClipEmpty.Broadcast();
+        OnClipEmpty.Broadcast(this);
     }
     
     
@@ -251,7 +251,7 @@ bool ABaseWeapon::RefillAmmo(int32 Amount)
         {
         CurrentAmmo.TotalAmmo =
             FMath::Clamp((CurrentAmmo.TotalAmmo + Amount), CurrentAmmo.TotalAmmo, (DefaultAmmo.TotalAmmo+(FMath::Clamp(Amount,0,DefaultAmmo.ClipSize-CurrentAmmo.ClipSize))));
-        OnClipEmpty.Broadcast();
+        OnClipEmpty.Broadcast(this);
         return true;
         }
         else
