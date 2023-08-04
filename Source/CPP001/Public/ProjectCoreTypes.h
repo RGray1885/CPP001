@@ -3,6 +3,7 @@
 
 //weapon
 class ABaseWeapon;
+class UNiagaraSystem;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature,ABaseWeapon*);
 
@@ -55,6 +56,33 @@ struct FAmmoPickupData
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo")
     TSubclassOf<ABaseWeapon> WeaponClass;
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo", meta=(ClampMin="1.0",ClampMax="45.0"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ammo", meta = (ClampMin = "1.0", ClampMax = "45.0"))
     int32 Amount;
+};
+USTRUCT(BlueprintType) 
+struct FDecalData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    UMaterialInterface *Material;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    FVector Size = FVector(10.0f);
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    float LifeTime = 5.0f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    float FadeOutTime = 0.7f;
+};
+
+
+USTRUCT(BlueprintType)
+struct FImpactData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    UNiagaraSystem *NiagaraEffect;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    FDecalData DecalData;
 };

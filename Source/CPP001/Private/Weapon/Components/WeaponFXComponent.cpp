@@ -4,6 +4,8 @@
 #include "Weapon/Components/WeaponFXComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/DecalComponent.h"
 
 
 // Sets default values for this component's properties
@@ -37,20 +39,26 @@ void UWeaponFXComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 void UWeaponFXComponent::PlayImpactFX(const FHitResult &HitInfo)
 {
-    auto Effect = DefaultEffect;
+    auto ImpactData = DefaultImpactData;
 
 	if (HitInfo.PhysMaterial.IsValid())    //look for shared weak pointers in c++
 	{
         const auto PhysMat = HitInfo.PhysMaterial.Get();
-		if (EffectsMap.Contains(PhysMat))
+		if (ImpactDataMap.Contains(PhysMat))
 		{
-            Effect = EffectsMap[PhysMat];
+            ImpactData = ImpactDataMap[PhysMat];
            
 		}
 	}
-    UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), Effect, HitInfo.ImpactPoint,
+    UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactData.NiagaraEffect, HitInfo.ImpactPoint,
                                                    HitInfo.ImpactNormal.Rotation());
-	
+
+	auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), ImpactData.DecalData.Material, ImpactData.DecalData.Size,
+                                           HitInfo.ImpactPoint, HitInfo.ImpactPoint.Rotation());
+	if (DecalComponent)
+	{
+        DecalComponent->SetFadeOut(ImpactData.DecalData.LifeTime, ImpactData.DecalData.FadeOutTime);
+	}
 	
 }
 

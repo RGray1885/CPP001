@@ -47,6 +47,7 @@ void ABaseCharacter::BeginPlay()
     check(HealthComponent);
     check(HealthTextComponent);
     check(GetCharacterMovement());
+    check(GetMesh());
     HealthComponent->OnDeath.AddUObject(this, &ABaseCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &ABaseCharacter::OnHealthChanged);
     OnHealthChanged(HealthComponent->GetHealth());
@@ -130,7 +131,7 @@ void ABaseCharacter::StopSprint()
 void ABaseCharacter::OnDeath()
 {
     UE_LOG(LogBaseCharacter, Warning, TEXT("Player %s is dead"), *GetName());
-    PlayAnimMontage(DeathAnimMontage);
+    //PlayAnimMontage(DeathAnimMontage);
 
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(LifeSpanOnDeath);
@@ -141,6 +142,8 @@ void ABaseCharacter::OnDeath()
     {
         Controller->ChangeState(NAME_Spectating);
     }
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    GetMesh()->SetSimulatePhysics(true);
 }
 
 void ABaseCharacter::OnHealthChanged(float Health)
