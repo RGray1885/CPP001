@@ -2,6 +2,12 @@
 
 
 #include "Weapon/RifleWeapon.h"
+#include "Weapon/Components/WeaponFXComponent.h"
+
+ARifleWeapon::ARifleWeapon()
+{
+    WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
+}
 
 void ARifleWeapon::StartFire()
 {
@@ -26,6 +32,12 @@ void ARifleWeapon::StopFire()
     GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
 }
 
+void ARifleWeapon::BeginPlay()
+{
+    Super::BeginPlay();
+    check(WeaponFXComponent);
+}
+
 void ARifleWeapon::MakeShot()
 {
     if (Super::HaveNoAmmoToShoot()||Super::IsClipEmpty())
@@ -47,7 +59,8 @@ void ARifleWeapon::MakeShot()
     {
         DrawDebugLine(GetWorld(), GetMuzzleLocation(), HitResult.ImpactPoint, FColor::Green, false, 3.0f, 0, 3);
 
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.0f, 32, FColor::Red, false, 3.0f, 0, 3);
+        //DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 20.0f, 32, FColor::Red, false, 3.0f, 0, 3);
+        WeaponFXComponent->PlayImpactFX(HitResult);
         MakeDamage(HitResult);
     }
     else

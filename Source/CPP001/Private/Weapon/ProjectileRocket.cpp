@@ -4,6 +4,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Weapon/Components/WeaponFXComponent.h"
 
 // Sets default values
 AProjectileRocket::AProjectileRocket()
@@ -20,14 +21,18 @@ AProjectileRocket::AProjectileRocket()
     ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
     ProjectileMovementComponent->InitialSpeed = 1500.0f;
     ProjectileMovementComponent->ProjectileGravityScale = 0.1f;
+
+    WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
 }
 
 // Called when the game starts or when spawned
 void AProjectileRocket::BeginPlay()
 {
     Super::BeginPlay();
+
     check(ProjectileMovementComponent);
     check(CollisionComponent);
+    check(WeaponFXComponent);
 
     ProjectileMovementComponent->Velocity = ShotDirection * ProjectileMovementComponent->InitialSpeed;
     CollisionComponent->IgnoreActorWhenMoving(GetOwner(), true);
@@ -41,7 +46,8 @@ void AProjectileRocket::OnProjectileHit(UPrimitiveComponent *HitComponent, AActo
     if (!GetWorld())
         return;
     ProjectileMovementComponent->StopMovementImmediately();
-    DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 32, FColor::Black, false, 5.0f);
+    //DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 32, FColor::Black, false, 5.0f);
+    WeaponFXComponent->PlayImpactFX(Hit);
     UGameplayStatics::ApplyRadialDamage(GetWorld(),                 //
                                         DamageToDeal,               //
                                         GetActorLocation(),         //

@@ -8,6 +8,8 @@
 
 class UProjectileMovementComponent;
 class USphereComponent;
+class UWeaponFXComponent;
+
 UCLASS()
 class CPP001_API AProjectileRocket : public AActor
 {
@@ -24,6 +26,8 @@ protected:
     USphereComponent *CollisionComponent;
     UPROPERTY(VisibleDefaultsOnly, Category = "Weapon") 
 	UProjectileMovementComponent *ProjectileMovementComponent;
+    UPROPERTY(VisibleAnywhere, Category = "Effects")
+    UWeaponFXComponent *WeaponFXComponent;
 
 public:	
 	void SetShotDirection(FVector Direction){ShotDirection = Direction;}

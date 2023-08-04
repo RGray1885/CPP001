@@ -10,15 +10,19 @@
  * 
  */
 
+class UWeaponFXComponent;
 UCLASS()
 class CPP001_API ARifleWeapon : public ABaseWeapon
 {
 	GENERATED_BODY()
   public:
+    ARifleWeapon();
+
     virtual void StartFire() override;
     virtual void StopFire() override;
 
   protected:
+    virtual void BeginPlay() override;
     virtual void MakeShot() override;
     void MakeDamage(const FHitResult &HitResult);
     virtual bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const override;
@@ -30,6 +34,9 @@ class CPP001_API ARifleWeapon : public ABaseWeapon
     float WeaponFireDelay = 0.0f;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Firing")
     bool AutoFireAvailable = true;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effects")
+    UWeaponFXComponent *WeaponFXComponent;
+
   private:
     FTimerHandle ShotTimer;
     bool TriggerPulled;
