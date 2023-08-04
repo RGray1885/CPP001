@@ -16,6 +16,7 @@ AProjectileRocket::AProjectileRocket()
     CollisionComponent->InitSphereRadius(5.0f);
     CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+    CollisionComponent->bReturnMaterialOnMove = true;
     SetRootComponent(CollisionComponent);
 
     ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
@@ -46,7 +47,7 @@ void AProjectileRocket::OnProjectileHit(UPrimitiveComponent *HitComponent, AActo
     if (!GetWorld())
         return;
     ProjectileMovementComponent->StopMovementImmediately();
-    //DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 32, FColor::Black, false, 5.0f);
+    DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 32, FColor::Black, false, 5.0f);
     WeaponFXComponent->PlayImpactFX(Hit);
     UGameplayStatics::ApplyRadialDamage(GetWorld(),                 //
                                         DamageToDeal,               //
