@@ -30,7 +30,14 @@ class CPP001_API UPlayerHUDWidget : public UUserWidget
     bool IsPlayerAlive() const;
     UFUNCTION(BlueprintCallable, Category = "UI")
     bool IsPlayerSpectating() const;
+    UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+    void OnTakeDamage();
   protected:
     UWeaponComponent* GetCurrentWeaponComponent()const;
     UHealthComponent* GetHealthComponent() const;
+
+    virtual bool Initialize();
+
+  private:
+    void OnDamageTaken();
 };

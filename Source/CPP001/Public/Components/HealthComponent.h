@@ -7,8 +7,13 @@
 #include "ProjectCoreTypes.h"
 #include "HealthComponent.generated.h"
 
+
+class UCameraShakeBase;
+
 //DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);            //Moved to ProjectCoreTypes.h
 //DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float);
+
+//DECLARE_MULTICAST_DELEGATE(FOnDamageTaken);
 
     UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent)) class CPP001_API UHealthComponent
     : public UActorComponent
@@ -35,6 +40,7 @@
 
     FOnDeathSignature OnDeath;
     FOnHealthChangedSignature OnHealthChanged;
+    FOnDamageTaken OnDamageTaken;
 
   protected:
     // Called when the game starts
@@ -43,12 +49,16 @@
     float MaxHealth = 100;
     UPROPERTY(VisibleAnywhere, BlueprintreadWrite, Category = "Heal")
     bool bShouldHeal = false;
-    UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Heal", meta = (ClampMin = "0.1", ClampMax = "1.0"))
+    UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Heal", meta = (ClampMin = "0.01", ClampMax = "1.0"))
     float HealUpdateTime = 0.1;
     UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Heal", meta = (ClampMin = "1.0", ClampMax = "10.0"))
     float HealDelay = 1.0;
-    UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Heal", meta = (ClampMin = "1.0", ClampMax = "3.0"))
+    UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "Heal", meta = (ClampMin = "0.1", ClampMax = "10.0"))
     float HealModifier = 1.0;
+    UPROPERTY(EditDefaultsOnly, BlueprintreadWrite, Category = "VFX")
+    TSubclassOf<UCameraShakeBase> CameraShakeEffect;
+
+
 
     virtual void BeginPlay() override;
 
@@ -75,4 +85,6 @@
     UFUNCTION()
     void OnHeal();
     void SetHealth(float NewHealth);
+
+    void PlayCameraShake();
 };

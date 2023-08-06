@@ -41,6 +41,8 @@ void ALauncherWeapon::MakeShot()
         Projectile->FinishSpawning(SpawnTransform);
         
     }
+    SpawnMuzzleFX();
+    
     // set projectile params
    // UGameplayStatics::FinishSpawningActor(Projectile, SpawnTransform);
 }

@@ -71,6 +71,21 @@ bool UPlayerHUDWidget::IsPlayerSpectating() const
     return Controller&&Controller->GetStateName()==NAME_Spectating;
 }
 
+bool UPlayerHUDWidget::Initialize()
+{
+    const auto HealthComponent = ProjectUtils::GetPlayerComponent<UHealthComponent>(GetOwningPlayerPawn());
+    if (HealthComponent)
+    {
+    HealthComponent->OnDamageTaken.AddUObject(this, &UPlayerHUDWidget::OnDamageTaken);
+    }
+    return Super::Initialize();
+}
+
+void UPlayerHUDWidget::OnDamageTaken()
+{
+    OnTakeDamage();
+}
+
 /* UWeaponComponent *UPlayerHUDWidget::GetCurrentWeaponComponent() const
 {
     //const auto Player = GetOwningPlayerPawn();

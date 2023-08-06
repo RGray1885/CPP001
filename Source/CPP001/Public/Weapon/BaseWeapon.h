@@ -6,6 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "ProjectCoreTypes.h"
 #include "BaseWeapon.generated.h"
+
+
+class UNiagaraSystem;
+class UNiagaraComponent;
 //DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
 
 /* USTRUCT(BlueprintType)                                                                               //Moved to ProjectCoreTypes.h
@@ -51,6 +55,10 @@ protected:
   FAmmoData DefaultAmmo{15, 150, false, false,1};
   UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
   FWeaponUIData UIData;
+  UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+  UNiagaraSystem *MuzzleFX;
+
+  
   
  
 
@@ -100,6 +108,7 @@ protected:
   }
   void ReloadClip();
   void LogAmmo();
+  UNiagaraComponent *SpawnMuzzleFX();
 
   private:
   FAmmoData CurrentAmmo;

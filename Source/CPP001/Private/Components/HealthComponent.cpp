@@ -2,6 +2,10 @@
 
 #include "Components/HealthComponent.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
+#include "Camera/CameraShakeBase.h"
+#include "GameFramework/Controller.h"
+
 /*#include "FireDamageType.h"
 #include "IceDamageType.h"
 */
@@ -26,6 +30,7 @@ void UHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
     check(MaxHealth > 0);
+    check(CameraShakeEffect);
     SetHealth(MaxHealth);
     //OnHealthChanged.Broadcast(Health);
     AActor* ComponentOwner = GetOwner();
@@ -63,6 +68,7 @@ void UHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const
         return;
     //Health = FMath::Clamp(Health - Damage, 0.0f,MaxHealth);
     SetHealth(Health - Damage);
+    
     //OnHealthChanged.Broadcast(Health);
     if (GetOwner()->GetWorldTimerManager().IsTimerActive(HealTimer))
     {
@@ -93,6 +99,8 @@ void UHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const
             UE_LOG(LogHealthComponent, Display, TEXT("Ice Damage: %f"), Damage)
         }
     }*/
+    PlayCameraShake();
+    OnDamageTaken.Broadcast();
 }
 
 void UHealthComponent::OnHeal()
@@ -117,6 +125,19 @@ void UHealthComponent::SetHealth(float NewHealth)
 {
     Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
     OnHealthChanged.Broadcast(Health);
+}
+
+void UHealthComponent::PlayCameraShake()
+{
+    if (IsDead())
+        return;
+    const auto Player = Cast<APawn>(GetOwner());
+    if (!Player)
+        return;
+    const auto Controller = Player->GetController<APlayerController>();
+    if (!Controller || !Controller->PlayerCameraManager&&(!CameraShakeEffect))
+        return;
+    Controller->PlayerCameraManager->StartCameraShake(CameraShakeEffect);
 }
 
 // Called every frame

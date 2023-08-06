@@ -3,6 +3,7 @@
 
 #include "Weapon/RifleWeapon.h"
 #include "Weapon/Components/WeaponFXComponent.h"
+#include "NiagaraComponent.h"
 
 ARifleWeapon::ARifleWeapon()
 {
@@ -15,6 +16,7 @@ void ARifleWeapon::StartFire()
     TriggerPulled = true;
     if (Super::HaveNoAmmoToShoot()||Super::IsClipEmpty())
         return;
+    
     if (AutoFireAvailable)
     {
         GetWorld()->GetTimerManager().SetTimer(ShotTimer, this, &ARifleWeapon::MakeShot, WeaponRateOfFire, TriggerPulled,
@@ -30,6 +32,7 @@ void ARifleWeapon::StopFire()
 {
     TriggerPulled = false;
     GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
+    SetMuzzleFXVisibility(false);
 }
 
 void ARifleWeapon::BeginPlay()
@@ -47,6 +50,8 @@ void ARifleWeapon::MakeShot()
         return;
     if (!GetWorld())
         return;
+    InitMuzzleFX();
+
     FVector TraceStart;                         
     FVector TraceEnd;
     if (!GetTraceData(TraceStart, TraceEnd))
@@ -80,6 +85,23 @@ bool ARifleWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
 
     TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
     return true;
+}
+void ARifleWeapon::InitMuzzleFX()
+{
+    if (!MuzzleFXComponent)
+    {
+        MuzzleFXComponent = SpawnMuzzleFX();
+    }
+    SetMuzzleFXVisibility(true);
+}
+void ARifleWeapon::SetMuzzleFXVisibility(bool Visible)
+{
+    if (MuzzleFXComponent)
+    {
+        //MuzzleFXComponent->DestroyComponent(true);
+        MuzzleFXComponent->SetPaused(!Visible);
+        MuzzleFXComponent->SetVisibility(Visible, true);
+    }
 }
 void ARifleWeapon::MakeDamage(const FHitResult &HitResult)
 {

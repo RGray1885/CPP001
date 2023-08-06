@@ -6,10 +6,11 @@
 #include "Weapon/BaseWeapon.h"
 #include "RifleWeapon.generated.h"
 
+
 /**
  * 
  */
-
+class UNiagaraComponent;
 class UWeaponFXComponent;
 UCLASS()
 class CPP001_API ARifleWeapon : public ABaseWeapon
@@ -36,8 +37,12 @@ class CPP001_API ARifleWeapon : public ABaseWeapon
     bool AutoFireAvailable = true;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effects")
     UWeaponFXComponent *WeaponFXComponent;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effects")
+    UNiagaraComponent *MuzzleFXComponent;
 
   private:
     FTimerHandle ShotTimer;
     bool TriggerPulled;
+    void InitMuzzleFX();
+    void SetMuzzleFXVisibility(bool Visible);
 };

@@ -8,6 +8,8 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 // Sets default values
@@ -84,6 +86,7 @@ void ABaseWeapon::MakeShot()
     */
     if (!HaveNoAmmoToShoot())
     ConsumeAmmo();
+    //SpawnMuzzleFX();
 }
 APlayerController *ABaseWeapon::GetPlayerController() const
 {
@@ -198,7 +201,8 @@ void ABaseWeapon::ReloadClip()
     }
     else if (CurrentAmmo.TotalAmmo >= (DefaultAmmo.ClipSize - CurrentAmmo.ClipSize)&&IsClipNotFull())
     {
-        CurrentAmmo.TotalAmmo = FMath::Clamp((CurrentAmmo.TotalAmmo-(DefaultAmmo.ClipSize - CurrentAmmo.ClipSize)),CurrentAmmo.TotalAmmo,DefaultAmmo.TotalAmmo);
+        CurrentAmmo.TotalAmmo = FMath::Clamp((CurrentAmmo.TotalAmmo-(DefaultAmmo.ClipSize - CurrentAmmo.ClipSize)),0
+            ,DefaultAmmo.TotalAmmo);
         CurrentAmmo.ClipSize = DefaultAmmo.ClipSize;
         if (CurrentAmmo.TotalAmmo > DefaultAmmo.TotalAmmo)
             CurrentAmmo.TotalAmmo = DefaultAmmo.TotalAmmo;
@@ -223,6 +227,14 @@ void ABaseWeapon::LogAmmo()
         FString AmmoInfoLog = "Ammo: " + FString::FromInt(CurrentAmmo.ClipSize) + "/";
         AmmoInfoLog += CurrentAmmo.HasInfiniteAmmo ? "Infinite" : FString::FromInt(CurrentAmmo.TotalAmmo);
         UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfoLog);
+}
+
+UNiagaraComponent *ABaseWeapon::SpawnMuzzleFX()
+{
+        return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, WeaponMesh, MuzzleSocketName,
+                                                            //WeaponMesh->GetSocketLocation(MuzzleSocketName), 
+                                                            FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget,true);
+        
 }
 
 
