@@ -54,7 +54,7 @@ void UWeaponFXComponent::PlayImpactFX(const FHitResult &HitInfo)
                                                    HitInfo.ImpactNormal.Rotation());
 
 	auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), ImpactData.DecalData.Material, ImpactData.DecalData.Size,
-                                           HitInfo.ImpactPoint, HitInfo.ImpactPoint.Rotation());
+                                           HitInfo.Location, HitInfo.ImpactNormal.Rotation());
 	if (DecalComponent)
 	{
         DecalComponent->SetFadeOut(ImpactData.DecalData.LifeTime, ImpactData.DecalData.FadeOutTime);

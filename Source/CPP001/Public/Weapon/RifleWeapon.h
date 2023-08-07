@@ -11,6 +11,7 @@
  * 
  */
 class UNiagaraComponent;
+class UNiagaraSystem;
 class UWeaponFXComponent;
 UCLASS()
 class CPP001_API ARifleWeapon : public ABaseWeapon
@@ -39,10 +40,15 @@ class CPP001_API ARifleWeapon : public ABaseWeapon
     UWeaponFXComponent *WeaponFXComponent;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Effects")
     UNiagaraComponent *MuzzleFXComponent;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+    UNiagaraSystem *TraceFX;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effects")
+    FString TraceTargetName = "TraceTarget";
 
   private:
     FTimerHandle ShotTimer;
     bool TriggerPulled;
     void InitMuzzleFX();
     void SetMuzzleFXVisibility(bool Visible);
+    void SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd);
 };
