@@ -20,7 +20,8 @@ public class CPP001 : ModuleRules
 			"CPP001/Public/UI",
 			"CPP001/Public/Animations",
 			"CPP001/Public/Pickups",
-			"CPP001/Public/Weapon/Components"
+			"CPP001/Public/Weapon/Components",
+			"CPP001/Public/AI"
 		});
 
 		// Uncomment if you are using Slate UI
