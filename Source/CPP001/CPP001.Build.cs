@@ -8,7 +8,17 @@ public class CPP001 : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Niagara", "PhysicsCore" });
+		PublicDependencyModuleNames.AddRange(new string[] 
+		{ 
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"Niagara", 
+			"PhysicsCore", 
+			"GameplayTasks",
+			"NavigationSystem" 
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 		PublicIncludePaths.AddRange(new string[] 
@@ -21,7 +31,8 @@ public class CPP001 : ModuleRules
 			"CPP001/Public/Animations",
 			"CPP001/Public/Pickups",
 			"CPP001/Public/Weapon/Components",
-			"CPP001/Public/AI"
+			"CPP001/Public/AI",
+			"CPP001/Public/AI/Tasks"
 		});
 
 		// Uncomment if you are using Slate UI
