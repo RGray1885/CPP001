@@ -2,7 +2,7 @@
 class ProjectUtils
 {
   public:
-    template <typename T> static T *GetPlayerComponent(APawn *PlayerPawn)
+    template <typename T> static T *GetPlayerComponent(AActor *PlayerPawn)
     {
         if (!PlayerPawn)
             return nullptr;

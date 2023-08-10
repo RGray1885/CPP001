@@ -2,16 +2,31 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "AIController.h"
+#include "CoreMinimal.h"
 #include "BaseAIController.generated.h"
 
 /**
- * 
+ *
  */
+class UBaseAIPerceptionComponent;
+
 UCLASS()
 class CPP001_API ABaseAIController : public AAIController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+  public:
+    ABaseAIController();
+
+  protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+    UBaseAIPerceptionComponent *AIPerceptionComponent;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+    FName FocusOnKeyName = "EnemyActor";
+    virtual void OnPossess(APawn *InPawn) override;
+    virtual void Tick(float DeltaTime) override;
+
+    private:
+    AActor *GetFocusOnActor() const;
+    
 };
