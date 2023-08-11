@@ -76,7 +76,7 @@ public:
   }
   bool HaveAnyAmmo()
   {
-      return !HaveNoAmmoToShoot()&& CurrentAmmo.TotalAmmo!=0;
+      return !HaveNoAmmoToShoot()&& CurrentAmmo.TotalAmmo>0;
   }
   FWeaponUIData GetUIData() const
   {
@@ -84,6 +84,15 @@ public:
   }
   FString GetCurrentAmmo() const;
   bool RefillAmmo(int32 Amount);
+  bool HaveNoAmmoToShoot() const;
+  bool IsClipNotFull() const
+  {
+      return CurrentAmmo.ClipSize < DefaultAmmo.ClipSize;
+  }
+  bool IsClipEmpty() const
+  {
+      return CurrentAmmo.ClipSize == 0;
+  }
   
 
 protected:
@@ -97,15 +106,7 @@ protected:
   void MakeHit(FHitResult &HitResult, const FVector &TraceStart, const FVector &TraceEnd);
   //void AmmoConsumption();
   void ConsumeAmmo();
-  bool HaveNoAmmoToShoot() const;
-  bool IsClipNotFull() const
-  {
-      return CurrentAmmo.ClipSize < DefaultAmmo.ClipSize;
-  }
-  bool IsClipEmpty() const
-  {
-      return CurrentAmmo.ClipSize == 0;
-  }
+  
   void ReloadClip();
   void LogAmmo();
   UNiagaraComponent *SpawnMuzzleFX();

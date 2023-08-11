@@ -29,6 +29,8 @@ class CPP001_API UWeaponComponent : public UActorComponent
   public:
     // Sets default values for this component's properties
     UWeaponComponent();
+    bool CanFire() const;
+
 
   protected:
     // Called when the game starts
@@ -45,19 +47,28 @@ class CPP001_API UWeaponComponent : public UActorComponent
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+    bool CanEquip() const;
+    bool EquipInProgress;
+    bool ReloadInProgress;
+    
+    int32 CurrentWeaponIndex = 0;
+
+    void EquipWeapon(int32 WeaponIndex);
+        
+
+    UPROPERTY()
+    ABaseWeapon *CurrentWeapon = nullptr; // property for weapon in hand
+    UPROPERTY()
+    TArray<ABaseWeapon *> Weapons; // array for weapon in possession
+
   private:
-    UPROPERTY()
-    ABaseWeapon *CurrentWeapon = nullptr; //property for weapon in hand
-    UPROPERTY()
-    TArray<ABaseWeapon *> Weapons; //array for weapon in possession
+    
     UPROPERTY()
     UAnimMontage *CurrentReloadAnimMontage = nullptr;
 
-    int32 CurrentWeaponIndex = 0;
 
     void AttachWeaponToSocket(ABaseWeapon *Weapon, USceneComponent *SceneComponent, const FName &SocketName);
     void SpawnWeapons();
-    void EquipWeapon(int32 WeaponIndex);
     void PlayAnimMontage(UAnimMontage* Animation);
     void InitAnimations();
     void OnEquipFinished(USkeletalMeshComponent*MeshComponent);
@@ -65,18 +76,16 @@ class CPP001_API UWeaponComponent : public UActorComponent
     void OnReloadFinished(USkeletalMeshComponent *MeshComponent);
     void OnEmptyClip(ABaseWeapon* AmmoEmptyWeapon);
     
-    bool EquipInProgress;
-    bool ReloadInProgress;
-    bool CanFire() const;
-    bool CanEquip() const;
+   
+    
     bool IsFiring;
    
 
   
   public:
-    void FireWeapon();
+    virtual void FireWeapon();
     void StopFiring();
-    void NextWeapon();
+    virtual void NextWeapon();
     bool GetIsFiring() const
     {
         return IsFiring;

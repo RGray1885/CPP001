@@ -60,8 +60,18 @@ void UWeaponComponent::OnEmptyClip(ABaseWeapon *AmmoEmptyWeapon)
 void UWeaponComponent::FireWeapon()
 {
     if (!CanFire())
-    //if (!CurrentWeapon && EquipInProgress)
+    {
+        UE_LOG(LogWeaponComponent, Error, TEXT("Can't fire"))
         return;
+
+    }
+    else
+    {
+        CurrentWeapon->StartFire();
+        UE_LOG(LogWeaponComponent, Warning, TEXT("Firing weapon"))
+        IsFiring = true;
+    }
+    //if (!CurrentWeapon && EquipInProgress)
     //auto Player = Cast<ABaseCharacter> (CurrentWeapon->GetOwner()); //to prevent fire
     //if (!Player->GetIsRunning())                                    //during sprint or weapon change
    // if (CurrentWeapon->ShouldReload())
@@ -71,8 +81,6 @@ void UWeaponComponent::FireWeapon()
     //else
     //{
    
-        CurrentWeapon->StartFire();
-        IsFiring = true;
    
         
     //}
@@ -85,6 +93,7 @@ void UWeaponComponent::StopFiring()
     if (!CurrentWeapon)
     return;
     CurrentWeapon->StopFire();
+    UE_LOG(LogWeaponComponent, Error, TEXT("Stopped firing"))
     IsFiring = false;
 
     
@@ -253,7 +262,7 @@ bool UWeaponComponent::CanFire() const
 {
         auto Player = Cast<ABaseCharacter>(CurrentWeapon->GetOwner());
 
-        return CurrentWeapon && !EquipInProgress && !Player->GetIsRunning()&& !ReloadInProgress;
+        return CurrentWeapon && !EquipInProgress && !Player->GetIsRunning() && !ReloadInProgress;
 }
 
 bool UWeaponComponent::CanEquip() const
