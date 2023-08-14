@@ -44,7 +44,8 @@ void UHealthComponent::BeginPlay()
 
 void UHealthComponent::HealFromMedkit(float HealAmount)
 {
-    Health = FMath::Clamp((Health + HealAmount),Health,MaxHealth);                  // both works SetHealth(Health + HealAmount);
+    //Health = FMath::Clamp((Health + HealAmount),Health,MaxHealth);                  // both works SetHealth(Health + HealAmount);
+    SetHealth(Health + HealAmount);
     if (FMath::IsNearlyEqual(Health, MaxHealth, 0))
     {
         bShouldHeal = false;
