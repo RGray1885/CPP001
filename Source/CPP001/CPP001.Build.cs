@@ -33,7 +33,8 @@ public class CPP001 : ModuleRules
 			"CPP001/Public/Weapon/Components",
 			"CPP001/Public/AI",
 			"CPP001/Public/AI/Tasks",
-            "CPP001/Public/AI/Services"
+            "CPP001/Public/AI/Services",
+			"CPP001/Public/AI/EQS"
         });
 
 		// Uncomment if you are using Slate UI

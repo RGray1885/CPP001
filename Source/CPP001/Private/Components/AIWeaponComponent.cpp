@@ -17,7 +17,7 @@ void UAIWeaponComponent::FireWeapon()
     else
     {
         UE_LOG(LogAIWeapon,Error,TEXT("No more ammo"));
-        //NextWeapon();
+        NextWeapon();
     }
 }
 

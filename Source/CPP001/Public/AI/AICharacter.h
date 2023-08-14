@@ -21,4 +21,7 @@ class CPP001_API AAICharacter : public ABaseCharacter
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
     UBehaviorTree *BehaviorTreeAsset;
+
+	protected:
+    virtual void OnDeath() override;
 };

@@ -64,6 +64,9 @@ protected:
   UPROPERTY(EditDefaultsOnly, Category = "Damage")
   float LifeSpanOnDeath = 5.0f;
   
+
+    virtual void OnDeath();
+
   
 private:
 	  //MovementControl
@@ -75,7 +78,6 @@ private:
     bool bIsMovingForward;
     bool bIsMovingSideways;
     bool bShouldRun = false;
-    void OnDeath();
     void OnHealthChanged(float Health);
     UFUNCTION()
 	void OnGroundLanded(const FHitResult& Hit);

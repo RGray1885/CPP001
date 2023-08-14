@@ -144,6 +144,7 @@ void ABaseCharacter::OnDeath()
     }
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     GetMesh()->SetSimulatePhysics(true);
+    
 }
 
 void ABaseCharacter::OnHealthChanged(float Health)
