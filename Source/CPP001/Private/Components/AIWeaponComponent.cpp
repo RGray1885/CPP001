@@ -44,3 +44,21 @@ void UAIWeaponComponent::NextWeapon()
         EquipWeapon(CurrentWeaponIndex);
     }
 }
+
+bool UAIWeaponComponent::CheckAmmunition()
+{
+    for (const auto OneWeapon : Weapons)
+    {
+        if (OneWeapon->HaveNoAmmoToShoot())
+        {
+        return true;
+        break;
+        }
+        else
+        {
+        continue;
+        }
+        return false;
+    }
+    return false;
+}
