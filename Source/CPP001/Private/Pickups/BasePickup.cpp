@@ -54,6 +54,13 @@ void ABasePickup::Tick(float DeltaTime)
     AddActorLocalRotation(FRotator(0.0f, RotationYaw, 0.0f));
 }
 
+bool ABasePickup::CouldBeTaken() const
+{
+
+    return !GetWorldTimerManager().IsTimerActive(RespawnTimerHandle);
+    //return CoulBeTakenTest;
+}
+
 bool ABasePickup::GivePickupTo(APawn *PlayerPawn)
 {
 
@@ -67,7 +74,7 @@ void ABasePickup::PickupTaken()
     {
         GetRootComponent()->SetVisibility(false, true);
     }
-    FTimerHandle RespawnTimerHandle;
+    
     GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &ABasePickup::RespawnPickup,RespawnTime);
 }
 

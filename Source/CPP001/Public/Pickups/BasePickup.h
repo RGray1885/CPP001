@@ -29,7 +29,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
     float RespawnTime=5.0f;
     float RotationYaw = 0.0f;
-
+    FTimerHandle RespawnTimerHandle;
+    //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
+    //bool CoulBeTakenTest = true;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,6 +42,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+  bool CouldBeTaken() const;
 
 private:
     virtual bool GivePickupTo(APawn *PlayerPawn);
