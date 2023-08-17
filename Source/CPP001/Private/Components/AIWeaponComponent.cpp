@@ -45,11 +45,12 @@ void UAIWeaponComponent::NextWeapon()
     }
 }
 
-bool UAIWeaponComponent::CheckAmmunition()
+bool UAIWeaponComponent::CheckAmmunition(TSubclassOf<ABaseWeapon> WeaponType)
 {
     for (const auto OneWeapon : Weapons)
     {
-        if (OneWeapon->HaveNoAmmoToShoot())
+              
+        if (OneWeapon->IsA(WeaponType) && OneWeapon->HaveNoAmmoToShoot())
         {
         return true;
         break;

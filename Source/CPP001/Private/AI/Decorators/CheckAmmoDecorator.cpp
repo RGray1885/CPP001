@@ -12,6 +12,9 @@ UCheckAmmoDecorator::UCheckAmmoDecorator()
 }
 bool UCheckAmmoDecorator::CalculateRawConditionValue(UBehaviorTreeComponent &OwnerComp, uint8 *NodeMemory) const
 {
+    //if (!WeaponType)
+      //  return false;
+    
     const auto Controller = OwnerComp.GetAIOwner();
     if (!Controller)
         return false;
@@ -20,5 +23,5 @@ bool UCheckAmmoDecorator::CalculateRawConditionValue(UBehaviorTreeComponent &Own
     if (!Component)
         return false;
     else
-        return Component->CheckAmmunition();
+        return Component->CheckAmmunition(WeaponType);
 }

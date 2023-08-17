@@ -18,7 +18,7 @@ class CPP001_API UAIWeaponComponent : public UWeaponComponent
   public:
     virtual void FireWeapon() override;
     virtual void NextWeapon() override;
-    bool CheckAmmunition();
+    bool CheckAmmunition(TSubclassOf<ABaseWeapon> WeaponType);
 
 
 };

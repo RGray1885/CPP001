@@ -6,6 +6,8 @@
 #include "BehaviorTree/BTDecorator.h"
 #include "CheckAmmoDecorator.generated.h"
 
+
+class ABaseWeapon;
 /**
  * 
  */
@@ -16,7 +18,10 @@ class CPP001_API UCheckAmmoDecorator : public UBTDecorator
 	
 	public:
     UCheckAmmoDecorator();
+      UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+      TSubclassOf<ABaseWeapon> WeaponType;
 
 	protected:
     virtual bool CalculateRawConditionValue(UBehaviorTreeComponent &OwnerComp, uint8 *NodeMemory) const override;
+      
 };
