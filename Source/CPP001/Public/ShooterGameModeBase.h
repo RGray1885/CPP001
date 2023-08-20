@@ -33,5 +33,15 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
     FGameData GameData;
 
     private:
+    int32 CurrentRound = 1;
+      int32 RoundTimeLeft = 0;
+    FTimerHandle RoundTimerHandle;
+    
     void SpawnBots();
+    void StartRound();
+    void UpdateRoundTimer();
+
+
+    void ResetPlayers();
+    void ResetOnePlayer(AController* Controller);
 };

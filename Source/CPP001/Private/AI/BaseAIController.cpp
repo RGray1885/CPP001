@@ -11,6 +11,8 @@ ABaseAIController::ABaseAIController()
 {
     AIPerceptionComponent = CreateDefaultSubobject<UBaseAIPerceptionComponent>("AIPerceptionComponent");
     SetPerceptionComponent(*AIPerceptionComponent);
+
+    bWantsPlayerState = true;
 }
 
 void ABaseAIController::OnPossess(APawn *InPawn)

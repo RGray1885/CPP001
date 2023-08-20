@@ -8,6 +8,8 @@
 #include "AIController.h"
 
 
+DEFINE_LOG_CATEGORY_STATIC(LogShooterGameModeBase, All, All);
+
 
 AShooterGameModeBase::AShooterGameModeBase()
 {
@@ -22,6 +24,10 @@ void AShooterGameModeBase::StartPlay()
     Super::StartPlay();
 
     SpawnBots();
+
+    CurrentRound = 1;
+    StartRound();
+
 }
 
 UClass *AShooterGameModeBase::GetDefaultPawnClassForController_Implementation(AController *InController)
@@ -46,4 +52,57 @@ void AShooterGameModeBase::SpawnBots()
         const auto ProjectAIController = GetWorld()->SpawnActor<AAIController>(AIControllerClass, SpawnInfo);
         RestartPlayer(ProjectAIController);
     }
+}
+
+void AShooterGameModeBase::StartRound()
+{
+    RoundTimeLeft = GameData.RoundTime;
+    UE_LOG(LogShooterGameModeBase, Warning, TEXT("Round %i. Fight!"), CurrentRound);
+    GetWorldTimerManager().SetTimer(RoundTimerHandle, this, &AShooterGameModeBase::UpdateRoundTimer, 1.0f, true);
+}
+
+void AShooterGameModeBase::UpdateRoundTimer()
+{
+    UE_LOG(LogShooterGameModeBase, Display, TEXT("Time: %i /Round: %i/%i"), RoundTimeLeft, CurrentRound,
+           GameData.RoundsNum);
+
+   // const auto TimerRate = GetWorldTimerManager().GetTimerRate(RoundTimerHandle);
+   // RoundTimeLeft -= TimerRate;
+
+    if (--RoundTimeLeft == 0)
+    {
+        GetWorldTimerManager().ClearTimer(RoundTimerHandle);
+        if(CurrentRound+1<=GameData.RoundsNum)
+        {
+            ++CurrentRound;
+            ResetPlayers();
+            StartRound();
+        }
+        else
+        {
+            UE_LOG(LogShooterGameModeBase, Display, TEXT("======= GAME OVER ======="))
+        }
+
+    }
+}
+
+void AShooterGameModeBase::ResetPlayers()
+{
+    if (!GetWorld())
+        return;
+
+    for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+    {
+        ResetOnePlayer(It->Get());
+    }
+
+}
+
+void AShooterGameModeBase::ResetOnePlayer(AController *Controller)
+{
+    if (Controller && Controller->GetPawn())
+    {
+        Controller->GetPawn()->Reset();
+    }
+    RestartPlayer(Controller);
 }
