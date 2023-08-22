@@ -121,5 +121,11 @@ void ARifleWeapon::MakeDamage(const FHitResult &HitResult)
     const auto HitActor = HitResult.GetActor();
     if (!HitActor)
         return;
-    HitActor->TakeDamage(DamagePerHit, FDamageEvent{}, GetPlayerController(), this);
+    HitActor->TakeDamage(DamagePerHit, FDamageEvent{}, GetController(), this);
+}
+
+AController *ARifleWeapon::GetController() const
+{
+    const auto Pawn = Cast<APawn>(GetOwner());
+    return Pawn ? Pawn->GetController() : nullptr;
 }

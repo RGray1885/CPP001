@@ -63,6 +63,8 @@ protected:
   FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
   UPROPERTY(EditDefaultsOnly, Category = "Damage")
   float LifeSpanOnDeath = 5.0f;
+  UPROPERTY(EditDefaultsOnly, Category = "Materials")
+  FName MaterialColorName = "Paint Color";
   
 
     virtual void OnDeath();
@@ -90,5 +92,5 @@ public:
     {
             return WeaponComponent;
     }
-	
+    void SetPlayerColor(const FLinearColor &Color);
 };

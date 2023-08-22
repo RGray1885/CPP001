@@ -24,6 +24,8 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
     virtual void StartPlay() override;
     virtual UClass *GetDefaultPawnClassForController_Implementation(AController *InController) override;
 
+    void Killed(AController *KillerController, AController *VictimController);
+
     protected:
     UPROPERTY(EditDefaultsOnly, Category = "GameOptions")
     TSubclassOf<AAIController> AIControllerClass;
@@ -44,4 +46,10 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
 
     void ResetPlayers();
     void ResetOnePlayer(AController* Controller);
+
+    void CreateTeamsInfo();
+    FLinearColor DetermineColorByTeamID(int32 TeamID) const;
+    void SetPlayerColor(AController *Controller);
+
+    void LogPlayerInfo();
 };

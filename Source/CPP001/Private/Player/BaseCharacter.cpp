@@ -163,3 +163,11 @@ void ABaseCharacter::OnGroundLanded(const FHitResult &Hit)
     UE_LOG(LogBaseCharacter, Display, TEXT("Final Damage: %f"), FinalDamage);
 }
 
+void ABaseCharacter::SetPlayerColor(const FLinearColor &Color)
+{
+    const auto MaterialInstance = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+    if (!MaterialInstance)
+        return;
+    MaterialInstance->SetVectorParameterValue(MaterialColorName, Color);
+}
+

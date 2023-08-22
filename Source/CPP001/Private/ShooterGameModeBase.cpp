@@ -6,6 +6,7 @@
 #include "Player/BasePlayerController.h"
 #include "UI/GameHUD.h"
 #include "AIController.h"
+#include "Player/BasePlayerState.h"
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogShooterGameModeBase, All, All);
@@ -17,6 +18,7 @@ AShooterGameModeBase::AShooterGameModeBase()
     DefaultPawnClass = ABaseCharacter::StaticClass();
     PlayerControllerClass = ABasePlayerController::StaticClass();
     HUDClass = AGameHUD::StaticClass();
+    PlayerStateClass = ABasePlayerState::StaticClass();
 }
 
 void AShooterGameModeBase::StartPlay()
@@ -24,7 +26,7 @@ void AShooterGameModeBase::StartPlay()
     Super::StartPlay();
 
     SpawnBots();
-
+    CreateTeamsInfo();
     CurrentRound = 1;
     StartRound();
 
@@ -38,6 +40,8 @@ UClass *AShooterGameModeBase::GetDefaultPawnClassForController_Implementation(AC
     }
     return Super::GetDefaultPawnClassForController_Implementation(InController);
 }
+
+
 
 void AShooterGameModeBase::SpawnBots()
 {
@@ -81,6 +85,8 @@ void AShooterGameModeBase::UpdateRoundTimer()
         else
         {
             UE_LOG(LogShooterGameModeBase, Display, TEXT("======= GAME OVER ======="))
+            LogPlayerInfo();
+
         }
 
     }
@@ -105,4 +111,84 @@ void AShooterGameModeBase::ResetOnePlayer(AController *Controller)
         Controller->GetPawn()->Reset();
     }
     RestartPlayer(Controller);
+    SetPlayerColor(Controller);
+}
+
+void AShooterGameModeBase::CreateTeamsInfo()
+{
+    if (!GetWorld())
+        return;
+    int32 TeamID = 1;
+    for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+    {
+        const auto Controller = It->Get();
+        if (!Controller)
+            continue;
+
+        const auto PlayerState = Cast<ABasePlayerState>(Controller->PlayerState);
+        if (!PlayerState)
+            continue;
+        PlayerState->SetTeamID(TeamID);
+        PlayerState->SetTeamColor(DetermineColorByTeamID(TeamID));
+        SetPlayerColor(Controller);
+        TeamID = TeamID == 1 ? 2 : 1;
+
+    }
+}
+
+FLinearColor AShooterGameModeBase::DetermineColorByTeamID(int32 TeamID) const
+{
+    if (TeamID - 1 < GameData.TeamColors.Num())
+    {
+        return GameData.TeamColors[TeamID - 1];
+    }
+    UE_LOG(LogShooterGameModeBase, Warning, TEXT("No color for team if: %i, set to default: %s"), TeamID,
+           *GameData.DefaultTeamColor.ToString());
+    return GameData.DefaultTeamColor;
+}
+
+void AShooterGameModeBase::SetPlayerColor(AController *Controller)
+{
+    if (!Controller)
+        return;
+    const auto Character = Cast<ABaseCharacter>(Controller->GetPawn());
+    if (!Character)
+        return;
+    const auto PlayerState = Cast<ABasePlayerState>(Controller->PlayerState);
+    if (!PlayerState)
+        return;
+    Character->SetPlayerColor(PlayerState->GetTeamColor());
+}
+
+
+void AShooterGameModeBase::LogPlayerInfo()
+{
+    if (!GetWorld())
+        return;
+    for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+    {
+        const auto Controller = It->Get();
+        if (!Controller)
+            continue;
+            
+        const auto PlayerState = Cast<ABasePlayerState>(Controller->PlayerState);
+        PlayerState->LogInfo();
+    }
+}
+
+void AShooterGameModeBase::Killed(AController *KillerController, AController *VictimController)
+{
+    const auto KillerPlayerState = KillerController ? Cast<ABasePlayerState>(KillerController->PlayerState) : nullptr;
+    const auto VictimPlayerState = VictimController ? Cast<ABasePlayerState>(VictimController->PlayerState) : nullptr;
+
+
+    if (KillerPlayerState)
+    {
+        KillerPlayerState->AddKill();
+    }
+    if (VictimPlayerState)
+    {
+        VictimPlayerState->AddDeath();
+    }
+
 }

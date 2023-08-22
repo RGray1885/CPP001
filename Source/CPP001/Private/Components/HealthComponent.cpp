@@ -5,6 +5,7 @@
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraShakeBase.h"
 #include "GameFramework/Controller.h"
+#include "ShooterGameModeBase.h"
 
 /*#include "FireDamageType.h"
 #include "IceDamageType.h"
@@ -85,6 +86,7 @@ void UHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const
 
     if (IsDead())
     {
+        Killed(InstigatedBy);
         bShouldHeal = false;
         OnDeath.Broadcast();
     }
@@ -139,6 +141,16 @@ void UHealthComponent::PlayCameraShake()
     if (!Controller || !Controller->PlayerCameraManager&&(!CameraShakeEffect))
         return;
     Controller->PlayerCameraManager->StartCameraShake(CameraShakeEffect);
+}
+
+void UHealthComponent::Killed(AController *KillerController)
+{
+    const auto GameMode = Cast<AShooterGameModeBase>(GetWorld()->GetAuthGameMode());
+    if (!GameMode)
+        return;
+    const auto Player = Cast<APawn>(GetOwner());
+    const auto VictimController = Player ? Player->Controller : nullptr;
+    GameMode->Killed(KillerController,VictimController);
 }
 
 // Called every frame

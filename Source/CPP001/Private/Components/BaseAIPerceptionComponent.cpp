@@ -29,8 +29,10 @@ AActor *UBaseAIPerceptionComponent::GetClosestEnemy() const
     for (const auto PercievedActor : PercievedActors)
     {
         const auto HealthComponent = 
-            PercievedActor->FindComponentByClass<UHealthComponent>(); // ProjectUtils::GetPlayerComponent<UHealthComponent>(PercievedActor);
-        if (HealthComponent && !HealthComponent->IsDead()) // TODO: check if enemies or not
+            PercievedActor->FindComponentByClass<UHealthComponent>(); // line ProjectUtils::GetPlayerComponent<UHealthComponent>(PercievedActor) works the same;
+        const auto PercievedPawn = Cast<APawn>(PercievedActor);
+        const auto AreEnemies = PercievedPawn && ProjectUtils::AreEnemies(Controller, PercievedPawn->Controller);
+        if (HealthComponent && !HealthComponent->IsDead()&& AreEnemies) // TODO: check if enemies or not - XdoneX
         {
             const auto CurrentDistance = (PercievedActor->GetActorLocation() - Pawn->GetActorLocation()).Size();
             if (CurrentDistance < BestDistance)

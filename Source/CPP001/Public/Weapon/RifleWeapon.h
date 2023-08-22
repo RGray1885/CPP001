@@ -27,6 +27,7 @@ class CPP001_API ARifleWeapon : public ABaseWeapon
     virtual void BeginPlay() override;
     virtual void MakeShot() override;
     void MakeDamage(const FHitResult &HitResult);
+    AController *GetController() const;
     virtual bool GetTraceData(FVector &TraceStart, FVector &TraceEnd) const override;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Firing")
     float BulletSpread = 1.5f;
