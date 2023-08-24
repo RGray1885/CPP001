@@ -15,11 +15,14 @@ class CPP001_API AGameHUD : public AHUD
     GENERATED_BODY()
   public:
     virtual void DrawHUD() override;
+    
 
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
+    UUserWidget *PlayerHUDWidget;
     virtual void BeginPlay() override;
+
 
   private:
     void DrawCrosshair();

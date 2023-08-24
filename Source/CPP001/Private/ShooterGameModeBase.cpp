@@ -8,7 +8,6 @@
 #include "AIController.h"
 #include "Player/BasePlayerState.h"
 
-
 DEFINE_LOG_CATEGORY_STATIC(LogShooterGameModeBase, All, All);
 
 
@@ -112,6 +111,11 @@ void AShooterGameModeBase::ResetOnePlayer(AController *Controller)
     }
     RestartPlayer(Controller);
     SetPlayerColor(Controller);
+    
+    const auto PlayerController = Cast<ABasePlayerController>(Controller);
+    
+    if (PlayerController)
+    InitializeHUDForPlayer(PlayerController);
 }
 
 void AShooterGameModeBase::CreateTeamsInfo()

@@ -7,12 +7,14 @@
 void AGameHUD::DrawHUD()
 {
     Super::DrawHUD();
+   
     //DrawCrosshair();
 }
 
+
 void AGameHUD::BeginPlay()
 {
-    auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
+    PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
     if (PlayerHUDWidget)
     {
         PlayerHUDWidget->AddToViewport();
