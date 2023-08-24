@@ -54,9 +54,9 @@ void AProjectileRocket::OnProjectileHit(UPrimitiveComponent *HitComponent, AActo
                                         GetActorLocation(),         //
                                         DamageRadius,               //
                                         UDamageType::StaticClass(), //
-                                        {GetOwner()},               //
+                                        {GetController()},          //
                                         this,                       //
-                                        nullptr,                    //
+                                        GetController(),            //
                                         DoFullDamage);
 
     // make damage

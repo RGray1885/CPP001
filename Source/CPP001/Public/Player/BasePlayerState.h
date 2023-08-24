@@ -36,7 +36,7 @@ class CPP001_API ABasePlayerState : public APlayerState
     }
     void AddKill()
     {
-        ++KillCount;
+        KillCount++;
     }
     int32 GetKillCount() const
     {
@@ -44,7 +44,7 @@ class CPP001_API ABasePlayerState : public APlayerState
     }
     void AddDeath()
     {
-        ++DeathCount;
+        DeathCount++;
     }
     int32 GetDeathCount() const
     {
@@ -56,7 +56,7 @@ class CPP001_API ABasePlayerState : public APlayerState
 private:
     int32 TeamID;
     FLinearColor TeamColor;
-    int32 KillCount = 0;
-    int32 DeathCount = 0;
+    int32 KillCount;
+    int32 DeathCount;
 
 };

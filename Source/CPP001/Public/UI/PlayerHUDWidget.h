@@ -32,6 +32,9 @@ class CPP001_API UPlayerHUDWidget : public UUserWidget
     bool IsPlayerSpectating() const;
     UFUNCTION(BlueprintImplementableEvent, Category = "UI")
     void OnTakeDamage();
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void GetPlayerGameStatistics(int32 &RoundTime, int32 &CurrentRound, int32 &RoundsTotal, int32 &KillsCount, int32 &DeathsCount) const;
+
   protected:
     UWeaponComponent* GetCurrentWeaponComponent()const;
     UHealthComponent* GetHealthComponent() const;

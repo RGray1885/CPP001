@@ -25,7 +25,21 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
     virtual UClass *GetDefaultPawnClassForController_Implementation(AController *InController) override;
 
     void Killed(AController *KillerController, AController *VictimController);
+    
+    int32 GetCurrentRound() const
+    {
+        return CurrentRound;
+    }
+    int32 GetTotalRounds()
+    {
+        return GameData.RoundsNum;
+    }
+    int32 GetRoundTime()
+    {
+        return RoundTimeLeft;
+    }
 
+   
     protected:
     UPROPERTY(EditDefaultsOnly, Category = "GameOptions")
     TSubclassOf<AAIController> AIControllerClass;
@@ -36,7 +50,7 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
 
     private:
     int32 CurrentRound = 1;
-      int32 RoundTimeLeft = 0;
+    int32 RoundTimeLeft = 0;
     FTimerHandle RoundTimerHandle;
     
     void SpawnBots();

@@ -6,6 +6,8 @@
 #include "WeaponComponent.h"
 #include "ProjectCoreTypes.h"
 #include "ProjectUtils.h"
+#include "Player/BasePlayerState.h"
+#include "ShooterGameModeBase.h"
 
 
 
@@ -71,6 +73,7 @@ bool UPlayerHUDWidget::IsPlayerSpectating() const
     return Controller&&Controller->GetStateName()==NAME_Spectating;
 }
 
+
 bool UPlayerHUDWidget::Initialize()
 {
     const auto HealthComponent = ProjectUtils::GetPlayerComponent<UHealthComponent>(GetOwningPlayerPawn());
@@ -121,6 +124,21 @@ UHealthComponent *UPlayerHUDWidget::GetHealthComponent() const
     return nullptr;
 }*/
 
+void UPlayerHUDWidget::GetPlayerGameStatistics(int32 &RoundTime, int32 &CurrentRound, int32 &RoundsTotal,
+                                               int32 &KillsCount, int32 &DeathsCount) const
+{
+    const auto PlayerState = Cast<ABasePlayerState>(GetOwningPlayerState());
+    const auto CurrentGameMode = Cast<AShooterGameModeBase>(GetWorld()->GetAuthGameMode());
+
+    if (!PlayerState||!CurrentGameMode)
+    return;
+
+    KillsCount=PlayerState->GetKillCount();
+    DeathsCount=PlayerState->GetDeathCount();
+    RoundTime = CurrentGameMode->GetRoundTime();
+    CurrentRound = CurrentGameMode->GetCurrentRound();
+    RoundsTotal = CurrentGameMode->GetTotalRounds();
+}
 
 
 
