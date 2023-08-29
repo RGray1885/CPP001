@@ -8,15 +8,19 @@
 void UGameDataWidget::GetGameStatistics(int32 &KillsCount, int32 &DeathsCount, int32 &RoundTime, int32 &CurrentRound,
                                         int32 &RoundsTotal) const
 {
-    const auto PlayerState = Cast<ABasePlayerState>(GetOwningPlayerState());
-    const auto CurrentGameMode = Cast<AShooterGameModeBase>(GetWorld()->GetAuthGameMode());
+    if (GetWorld())
+    {
+        const auto PlayerState = Cast<ABasePlayerState>(GetOwningPlayerState());
+        const auto CurrentGameMode = Cast<AShooterGameModeBase>(GetWorld()->GetAuthGameMode());
 
-    if (!PlayerState || !CurrentGameMode)
-        return;
+        if (!PlayerState || !CurrentGameMode)
+            return;
 
-    KillsCount = PlayerState->GetKillCount();
-    DeathsCount = PlayerState->GetDeathCount();
-    RoundTime = CurrentGameMode->GetRoundTime();
-    CurrentRound = CurrentGameMode->GetCurrentRound();
-    RoundsTotal = CurrentGameMode->GetTotalRounds();
+        KillsCount = PlayerState->GetKillCount();
+        DeathsCount = PlayerState->GetDeathCount();
+        RoundTime = CurrentGameMode->GetRoundTime();
+        CurrentRound = CurrentGameMode->GetCurrentRound();
+        RoundsTotal = CurrentGameMode->GetTotalRounds();
+    }
+    
 }
