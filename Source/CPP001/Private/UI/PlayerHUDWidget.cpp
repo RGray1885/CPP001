@@ -78,9 +78,8 @@ bool UPlayerHUDWidget::Initialize()
 {
     const auto HealthComponent = ProjectUtils::GetPlayerComponent<UHealthComponent>(GetOwningPlayerPawn());
     if (HealthComponent)
-    {
     HealthComponent->OnDamageTaken.AddUObject(this, &UPlayerHUDWidget::OnDamageTaken);
-    }
+    
     return Super::Initialize();
 }
 
@@ -122,9 +121,9 @@ UHealthComponent *UPlayerHUDWidget::GetHealthComponent() const
     }
     else
     return nullptr;
-}*/
+}
 
-void UPlayerHUDWidget::GetPlayerGameStatistics(int32 &RoundTime, int32 &CurrentRound, int32 &RoundsTotal,
+ void UPlayerHUDWidget::GetPlayerGameStatistics(int32 &RoundTime, int32 &CurrentRound, int32 &RoundsTotal,
                                                int32 &KillsCount, int32 &DeathsCount) const
 {
     const auto PlayerState = Cast<ABasePlayerState>(GetOwningPlayerState());
@@ -138,7 +137,7 @@ void UPlayerHUDWidget::GetPlayerGameStatistics(int32 &RoundTime, int32 &CurrentR
     RoundTime = CurrentGameMode->GetRoundTime();
     CurrentRound = CurrentGameMode->GetCurrentRound();
     RoundsTotal = CurrentGameMode->GetTotalRounds();
-}
+}*/
 
 
 
