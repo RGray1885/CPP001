@@ -103,5 +103,6 @@ struct FGameData
     FLinearColor DefaultTeamColor=FLinearColor::White;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
     TArray<FLinearColor> TeamColors;
-
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameOptions", meta = (ClampMin = "3", ClampMax = "20"))
+    int32 RespawnTime = 5; // Respawn time in seconds
 };

@@ -4,6 +4,7 @@
 #include "AI/BaseAIController.h"
 #include "AI/AICharacter.h"
 #include "Components/BaseAIPerceptionComponent.h"
+#include "Components/RespawnComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -11,6 +12,8 @@ ABaseAIController::ABaseAIController()
 {
     AIPerceptionComponent = CreateDefaultSubobject<UBaseAIPerceptionComponent>("AIPerceptionComponent");
     SetPerceptionComponent(*AIPerceptionComponent);
+
+    RespawnComponent = CreateDefaultSubobject<URespawnComponent>("AIRespawnComponent");
 
     bWantsPlayerState = true;
 }

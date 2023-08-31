@@ -9,9 +9,15 @@
 /**
  * 
  */
+class URespawnComponent;
 UCLASS()
 class CPP001_API ABasePlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+    
+        public:
+    ABasePlayerController();
+    protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+    URespawnComponent *RespawnComponent;
 };

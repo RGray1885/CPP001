@@ -10,6 +10,7 @@
  *
  */
 class UBaseAIPerceptionComponent;
+class URespawnComponent;
 
 UCLASS()
 class CPP001_API ABaseAIController : public AAIController
@@ -23,6 +24,8 @@ class CPP001_API ABaseAIController : public AAIController
     UBaseAIPerceptionComponent *AIPerceptionComponent;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
     FName FocusOnKeyName = "EnemyActor";
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+    URespawnComponent *RespawnComponent;
     virtual void OnPossess(APawn *InPawn) override;
     virtual void Tick(float DeltaTime) override;
 

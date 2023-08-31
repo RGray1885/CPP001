@@ -39,6 +39,8 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
         return RoundTimeLeft;
     }
 
+    void RespawnRequest(AController* Controller);
+
    
     protected:
     UPROPERTY(EditDefaultsOnly, Category = "GameOptions")
@@ -66,4 +68,6 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
     void SetPlayerColor(AController *Controller);
 
     void LogPlayerInfo();
+
+    void StartRespawn(AController *Controller);
 };

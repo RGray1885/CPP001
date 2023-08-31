@@ -7,9 +7,12 @@
 #include "UI/GameHUD.h"
 #include "AIController.h"
 #include "Player/BasePlayerState.h"
+#include "ProjectUtils.h"
+#include "Components/RespawnComponent.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogShooterGameModeBase, All, All);
 
+constexpr static int32 MinRoundTimeForRespawn = 10;
 
 AShooterGameModeBase::AShooterGameModeBase()
 {
@@ -180,6 +183,19 @@ void AShooterGameModeBase::LogPlayerInfo()
     }
 }
 
+void AShooterGameModeBase::StartRespawn(AController* Controller)
+{
+    const auto RespawnAvaiable = RoundTimeLeft > MinRoundTimeForRespawn + GameData.RespawnTime;
+    if (!RespawnAvaiable)
+        return;
+    const auto RespawnComponent = Controller->FindComponentByClass<URespawnComponent>();
+    if (!RespawnComponent)
+        return;
+
+    RespawnComponent->Respawn(GameData.RespawnTime);
+
+}
+
 void AShooterGameModeBase::Killed(AController *KillerController, AController *VictimController)
 {
     const auto KillerPlayerState = KillerController ? Cast<ABasePlayerState>(KillerController->PlayerState) : nullptr;
@@ -195,4 +211,10 @@ void AShooterGameModeBase::Killed(AController *KillerController, AController *Vi
         VictimPlayerState->AddDeath();
     }
 
+    StartRespawn(VictimController);
+}
+
+void AShooterGameModeBase::RespawnRequest(AController *Controller)
+{
+    ResetOnePlayer(Controller);
 }
