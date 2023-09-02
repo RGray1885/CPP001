@@ -17,10 +17,17 @@ public:
 	URespawnComponent();
 
 	void Respawn(int32 RespawnTime);
+    
+	int32 GetRespawnCountdown() const
+    {
+        return RespawnCountdown;
+    }
+    bool IsRespawnInProgress() const;
 
   private:
     FTimerHandle RespawnTimerHandle;
     int32 RespawnCountdown=0;
+
 
 	void RespawnTimerUpdate();
 
