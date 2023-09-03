@@ -8,11 +8,9 @@
 //#include "BaseCharMoveComponent.h"
 #include "BaseCharacter.generated.h"
 
-class UCameraComponent;
-class USpringArmComponent;
+
 class UHealthComponent;
 class UBaseCharMoveComponent;
-class UTextRenderComponent;
 class ABaseWeapon;
 class UWeaponComponent;
 
@@ -24,35 +22,34 @@ class CPP001_API ABaseCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-  ABaseCharacter(const FObjectInitializer& ObjectInitializer);
+  ABaseCharacter(const FObjectInitializer& ObjInit);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+    virtual void OnDeath();
+
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-    bool IsRunning() const;
+    virtual bool IsRunning() const;
 
 
 protected:
 	//Add camera to character
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-  UCameraComponent* CameraComponent;
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-  USpringArmComponent* SpringArmComponent;
+  //UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+  //UCameraComponent* CameraComponent;
+  //UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+  //USpringArmComponent* SpringArmComponent;
   UFUNCTION(BlueprintPure, Category = "Movement")
   float GetMovementDirection() const;
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
   UHealthComponent* HealthComponent;
-  UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-  UTextRenderComponent *HealthTextComponent;
   UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
   UWeaponComponent *WeaponComponent;
   UPROPERTY(EditDefaultsOnly, Category = "Animations")
@@ -67,19 +64,21 @@ protected:
   FName MaterialColorName = "Paint Color";
   
 
-    virtual void OnDeath();
 
   
 private:
 	  //MovementControl
-    void MoveForward(float Amount);
-    void MoveRight(float Amount);
-    void OnSprint();
-    void StopSprint();
+    //void MoveForward(float Amount);
+    //void MoveRight(float Amount);
+    //void OnSprint();
+    //void StopSprint();
     UCharacterMovementComponent *CharacterMovement = GetCharacterMovement();
+    
+  protected:
+    bool bShouldRun = false;
     bool bIsMovingForward;
     bool bIsMovingSideways;
-    bool bShouldRun = false;
+  private:
     void OnHealthChanged(float Health);
     UFUNCTION()
 	void OnGroundLanded(const FHitResult& Hit);

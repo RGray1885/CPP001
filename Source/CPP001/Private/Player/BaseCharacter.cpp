@@ -2,12 +2,12 @@
 
 
 #include "Player/BaseCharacter.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
+//#include "Camera/CameraComponent.h"
+//#include "GameFramework/SpringArmComponent.h"
 #include "Components/BaseCharMoveComponent.h"
-#include "Components/InputComponent.h"
+//#include "Components/InputComponent.h"
 #include "Components/HealthComponent.h"
-#include "Components/TextRenderComponent.h"
+//#include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
 #include "Weapon/BaseWeapon.h"
 #include "Components/WeaponComponent.h"
@@ -17,24 +17,13 @@ DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
 
 // Sets default values
-ABaseCharacter::ABaseCharacter(const FObjectInitializer &ObjectInitializer)
-    : Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharMoveComponent>(ACharacter::CharacterMovementComponentName))
+ABaseCharacter::ABaseCharacter(const FObjectInitializer &ObjInit)
+    : Super(ObjInit.SetDefaultSubobjectClass<UBaseCharMoveComponent>(ACharacter::CharacterMovementComponentName))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//Set and attach camera
-    SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
-	SpringArmComponent->SetupAttachment(GetRootComponent());
-    SpringArmComponent->bUsePawnControlRotation = true;
-    SpringArmComponent->bEnableCameraLag = true;
-    SpringArmComponent->TargetArmLength = 220.0f;
-    SpringArmComponent->SocketOffset = FVector(0.0f,100.0f,110.0f);
-    CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
-    CameraComponent->SetupAttachment(SpringArmComponent);
+    
     HealthComponent = CreateDefaultSubobject<UHealthComponent>("HealthComponent");
-    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
-    HealthTextComponent->SetupAttachment(GetRootComponent());
-    HealthTextComponent->SetOwnerNoSee(true);
     WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponControlComponent");
 }
 
@@ -45,7 +34,6 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
     check(HealthComponent);
-    check(HealthTextComponent);
     check(GetCharacterMovement());
     check(GetMesh());
     HealthComponent->OnDeath.AddUObject(this, &ABaseCharacter::OnDeath);
@@ -66,8 +54,8 @@ void ABaseCharacter::Tick(float DeltaTime)
 
 
 // Called to bind functionality to input
-void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
+//void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+/* {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
     check(PlayerInputComponent);
     PlayerInputComponent->BindAxis("MoveForward", this, &ABaseCharacter::MoveForward);
@@ -82,11 +70,11 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
     PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, WeaponComponent, &UWeaponComponent::NextWeapon);
     PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UWeaponComponent::Reload);
 
-}
+}*/
 
 bool ABaseCharacter::IsRunning() const
 {
-    return bShouldRun && bIsMovingForward && !bIsMovingSideways && !GetVelocity().IsZero();
+    return false;
 }
 
 float ABaseCharacter::GetMovementDirection() const
@@ -100,33 +88,7 @@ float ABaseCharacter::GetMovementDirection() const
     return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
 }
 
-void ABaseCharacter::MoveForward(float Amount)
-{
-    bIsMovingForward = Amount > 0.0f;
-    if (Amount == 0.0f)
-        return;
-    AddMovementInput(GetActorForwardVector(), Amount);
-}
 
-void ABaseCharacter::MoveRight(float Amount)
-{
-    bIsMovingSideways = Amount != 0.0f;
-    if (Amount == 0.0f)
-        return;
-    AddMovementInput(GetActorRightVector(), Amount);
-}
-
-void ABaseCharacter::OnSprint()
-{
-    if (WeaponComponent->GetIsFiring())
-        return;
-    bShouldRun = true;
-}
-
-void ABaseCharacter::StopSprint()
-{
-    bShouldRun = false;
-}
 
 void ABaseCharacter::OnDeath()
 {
@@ -136,12 +98,7 @@ void ABaseCharacter::OnDeath()
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(LifeSpanOnDeath);
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-    HealthTextComponent->SetHiddenInGame(true);
     WeaponComponent->StopFiring();
-    if (Controller)
-    {
-        Controller->ChangeState(NAME_Spectating);
-    }
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     GetMesh()->SetSimulatePhysics(true);
     
@@ -149,7 +106,6 @@ void ABaseCharacter::OnDeath()
 
 void ABaseCharacter::OnHealthChanged(float Health)
 {
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("% .0f"), Health)));
 }
 
 void ABaseCharacter::OnGroundLanded(const FHitResult &Hit)
