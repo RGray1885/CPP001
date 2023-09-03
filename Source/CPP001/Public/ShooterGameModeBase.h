@@ -70,4 +70,6 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
     void LogPlayerInfo();
 
     void StartRespawn(AController *Controller);
+
+    void GameOver();
 };

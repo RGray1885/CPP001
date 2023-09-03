@@ -9,6 +9,7 @@
 #include "Player/BasePlayerState.h"
 #include "ProjectUtils.h"
 #include "Components/RespawnComponent.h"
+#include "EngineUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogShooterGameModeBase, All, All);
 
@@ -86,8 +87,8 @@ void AShooterGameModeBase::UpdateRoundTimer()
         }
         else
         {
-            UE_LOG(LogShooterGameModeBase, Display, TEXT("======= GAME OVER ======="))
-            LogPlayerInfo();
+            GameOver();
+            
 
         }
 
@@ -194,6 +195,21 @@ void AShooterGameModeBase::StartRespawn(AController* Controller)
 
     RespawnComponent->Respawn(GameData.RespawnTime);
 
+}
+
+void AShooterGameModeBase::GameOver()
+{
+    UE_LOG(LogShooterGameModeBase, Display, TEXT("======= GAME OVER ======="))
+    LogPlayerInfo();
+
+    for (auto Pawn : TActorRange<APawn>(GetWorld()))
+    {
+        if (Pawn)
+        {
+            Pawn->TurnOff();
+            Pawn->DisableInput(nullptr);
+        }
+    }
 }
 
 void AShooterGameModeBase::Killed(AController *KillerController, AController *VictimController)
