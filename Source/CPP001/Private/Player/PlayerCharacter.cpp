@@ -6,6 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/WeaponComponent.h"
+#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 
 
 //#include "Components/BaseCharMoveComponent.h"
@@ -20,7 +22,10 @@ APlayerCharacter::APlayerCharacter(const FObjectInitializer &ObjInit) : Super(Ob
     SpringArmComponent->SocketOffset = FVector(0.0f, 100.0f, 110.0f);
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
-   
+    CameraCollisionComponent = CreateDefaultSubobject<USphereComponent>("CameraCollisionComponent");
+    CameraCollisionComponent->SetupAttachment(CameraComponent);
+    CameraCollisionComponent->SetSphereRadius(10.0f);
+    CameraCollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 }
 void APlayerCharacter::OnDeath()
 {
@@ -30,6 +35,17 @@ void APlayerCharacter::OnDeath()
         Controller->ChangeState(NAME_Spectating);
     }
     
+}
+void APlayerCharacter::BeginPlay()
+{
+    Super::BeginPlay();
+    check(CameraCollisionComponent);
+    //don't forget to add '&' or you'll get into trouble
+    CameraCollisionComponent->OnComponentBeginOverlap.AddDynamic(
+        this, &APlayerCharacter::OnCameraCollisionBeginOverlap); 
+    CameraCollisionComponent->OnComponentEndOverlap.AddDynamic(
+        this, &APlayerCharacter::OnCameraCollisionEndOverlap);
+
 }
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 {
@@ -78,3 +94,35 @@ void APlayerCharacter::StopSprint()
 {
     bShouldRun = false;
 }
+
+void APlayerCharacter::OnCameraCollisionBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+                                                     UPrimitiveComponent *OtherComp, int32 OtherBodyIndex,
+                                                     bool bFromSweep, const FHitResult &SweepResult)
+{
+    CheckCameraOverlap();
+}
+
+void APlayerCharacter::OnCameraCollisionEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+                                                   UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
+{
+    CheckCameraOverlap();
+}
+
+void APlayerCharacter::CheckCameraOverlap()
+{
+    const auto HideMesh=CameraCollisionComponent->IsOverlappingComponent(GetCapsuleComponent());
+    GetMesh()->SetOwnerNoSee(HideMesh);
+
+    TArray<USceneComponent *> MeshChildren;
+    GetMesh()->GetChildrenComponents(true, MeshChildren);
+
+    for (auto MeshChild : MeshChildren)
+    {
+        const auto MeshChildGeometry = Cast<UPrimitiveComponent>(MeshChild);
+        if (MeshChildGeometry)
+        {
+            MeshChildGeometry->SetOwnerNoSee(HideMesh);
+        }
+    }
+}
+

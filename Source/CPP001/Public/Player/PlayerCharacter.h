@@ -12,6 +12,8 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class USphereComponent;
+class UCapsuleComponent;
 
 
 UCLASS()
@@ -26,9 +28,12 @@ class CPP001_API APlayerCharacter : public ABaseCharacter
     UCameraComponent *CameraComponent;
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USpringArmComponent *SpringArmComponent;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    USphereComponent *CameraCollisionComponent;
 
     protected:
     virtual void OnDeath() override;
+      virtual void BeginPlay() override;
 
     public:
     virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
@@ -42,4 +47,17 @@ class CPP001_API APlayerCharacter : public ABaseCharacter
     void StopSprint();
     UCharacterMovementComponent *CharacterMovement = GetCharacterMovement();
     
+
+
+    UFUNCTION()
+    void OnCameraCollisionBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+                                       UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                       const FHitResult &SweepResult);
+   
+
+    UFUNCTION()
+    void OnCameraCollisionEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+                                     UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
+   
+    void CheckCameraOverlap();
 };
