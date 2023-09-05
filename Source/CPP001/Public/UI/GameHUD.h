@@ -22,10 +22,19 @@ class CPP001_API AGameHUD : public AHUD
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
     UUserWidget *PlayerHUDWidget;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> PauseWidgetClass;
     virtual void BeginPlay() override;
 
 
   private:
+
+      UPROPERTY()
+    TMap<EMatchState, UUserWidget *> GameWidgets;
+
+      UPROPERTY()
+    UUserWidget *CurrentWidget = nullptr;
+
     void DrawCrosshair();
     void OnMatchStateChanged(EMatchState State);
 };

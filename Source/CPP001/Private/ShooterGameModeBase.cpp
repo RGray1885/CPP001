@@ -214,6 +214,29 @@ void AShooterGameModeBase::SetMatchState(EMatchState State)
     UE_LOG(LogShooterGameModeBase, Display, TEXT("Match state set: %s"), *UEnum::GetValueAsString(MatchState));
 }
 
+bool AShooterGameModeBase::SetPause(APlayerController *PC, FCanUnpause CanUnpauseDelegate)
+{
+    const auto PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
+
+    if (PauseSet)
+    {
+        SetMatchState(EMatchState::Pause);
+
+    }
+
+    return Super::SetPause(PC, CanUnpauseDelegate);
+}
+
+bool AShooterGameModeBase::ClearPause()
+{
+    const auto PauseCleared = Super::ClearPause();
+    if (PauseCleared)
+    {
+        SetMatchState(EMatchState::InProgress);
+    }
+    return PauseCleared;
+}
+
 void AShooterGameModeBase::Killed(AController *KillerController, AController *VictimController)
 {
     const auto KillerPlayerState = KillerController ? Cast<ABasePlayerState>(KillerController->PlayerState) : nullptr;
