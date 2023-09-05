@@ -21,6 +21,8 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
   public:
     AShooterGameModeBase();
 
+    FOnMatchStateChangeSignature OnMatchStateChanged;
+
     virtual void StartPlay() override;
     virtual UClass *GetDefaultPawnClassForController_Implementation(AController *InController) override;
 
@@ -51,6 +53,7 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
     FGameData GameData;
 
     private:
+    EMatchState MatchState = EMatchState::WaitingToStart;
     int32 CurrentRound = 1;
     int32 RoundTimeLeft = 0;
     FTimerHandle RoundTimerHandle;
@@ -72,4 +75,6 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
     void StartRespawn(AController *Controller);
 
     void GameOver();
+
+    void SetMatchState(EMatchState State);
 };

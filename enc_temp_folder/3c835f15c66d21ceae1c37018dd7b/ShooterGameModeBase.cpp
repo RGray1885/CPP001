@@ -1,14 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
 #include "ShooterGameModeBase.h"
-#include "AIController.h"
-#include "Components/RespawnComponent.h"
-#include "EngineUtils.h"
 #include "Player/BaseCharacter.h"
 #include "Player/BasePlayerController.h"
+#include "UI/GameHUD.h"
+#include "AIController.h"
 #include "Player/BasePlayerState.h"
 #include "ProjectUtils.h"
-#include "UI/GameHUD.h"
+#include "Components/RespawnComponent.h"
+#include "EngineUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogShooterGameModeBase, All, All);
 
@@ -16,7 +17,7 @@ constexpr static int32 MinRoundTimeForRespawn = 10;
 
 AShooterGameModeBase::AShooterGameModeBase()
 {
-    // Set default classes for player pawn and player controller
+	//Set default classes for player pawn and player controller
     DefaultPawnClass = ABaseCharacter::StaticClass();
     PlayerControllerClass = ABasePlayerController::StaticClass();
     HUDClass = AGameHUD::StaticClass();
@@ -29,11 +30,10 @@ void AShooterGameModeBase::StartPlay()
 
     SpawnBots();
     CreateTeamsInfo();
-
     CurrentRound = 1;
     StartRound();
-
     SetMatchState(EMatchState::InProgress);
+
 }
 
 UClass *AShooterGameModeBase::GetDefaultPawnClassForController_Implementation(AController *InController)
@@ -45,12 +45,14 @@ UClass *AShooterGameModeBase::GetDefaultPawnClassForController_Implementation(AC
     return Super::GetDefaultPawnClassForController_Implementation(InController);
 }
 
+
+
 void AShooterGameModeBase::SpawnBots()
 {
     if (!GetWorld())
         return;
 
-    for (int32 i = 0; i < GameData.PlayersNum - 1; ++i)
+    for (int32 i = 0; i < GameData.PlayersNum - 1;++i)
     {
         FActorSpawnParameters SpawnInfo;
         SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -72,21 +74,25 @@ void AShooterGameModeBase::UpdateRoundTimer()
     UE_LOG(LogShooterGameModeBase, Display, TEXT("Time: %i /Round: %i/%i"), RoundTimeLeft, CurrentRound,
            GameData.RoundsNum);
 
-    // const auto TimerRate = GetWorldTimerManager().GetTimerRate(RoundTimerHandle);
-    // RoundTimeLeft -= TimerRate;
+   // const auto TimerRate = GetWorldTimerManager().GetTimerRate(RoundTimerHandle);
+   // RoundTimeLeft -= TimerRate;
 
     if (--RoundTimeLeft == 0)
     {
         GetWorldTimerManager().ClearTimer(RoundTimerHandle);
-
-        if (CurrentRound + 1 <= GameData.RoundsNum)
+        if(CurrentRound+1<=GameData.RoundsNum)
         {
             ++CurrentRound;
             ResetPlayers();
             StartRound();
         }
         else
+        {
             GameOver();
+            
+
+        }
+
     }
 }
 
@@ -99,6 +105,7 @@ void AShooterGameModeBase::ResetPlayers()
     {
         ResetOnePlayer(It->Get());
     }
+
 }
 
 void AShooterGameModeBase::ResetOnePlayer(AController *Controller)
@@ -109,11 +116,11 @@ void AShooterGameModeBase::ResetOnePlayer(AController *Controller)
     }
     RestartPlayer(Controller);
     SetPlayerColor(Controller);
-
+    
     const auto PlayerController = Cast<ABasePlayerController>(Controller);
-
+    
     if (PlayerController)
-        InitializeHUDForPlayer(PlayerController);
+    InitializeHUDForPlayer(PlayerController);
 }
 
 void AShooterGameModeBase::CreateTeamsInfo()
@@ -134,6 +141,7 @@ void AShooterGameModeBase::CreateTeamsInfo()
         PlayerState->SetTeamColor(DetermineColorByTeamID(TeamID));
         SetPlayerColor(Controller);
         TeamID = TeamID == 1 ? 2 : 1;
+
     }
 }
 
@@ -161,6 +169,7 @@ void AShooterGameModeBase::SetPlayerColor(AController *Controller)
     Character->SetPlayerColor(PlayerState->GetTeamColor());
 }
 
+
 void AShooterGameModeBase::LogPlayerInfo()
 {
     if (!GetWorld())
@@ -170,13 +179,13 @@ void AShooterGameModeBase::LogPlayerInfo()
         const auto Controller = It->Get();
         if (!Controller)
             continue;
-
+            
         const auto PlayerState = Cast<ABasePlayerState>(Controller->PlayerState);
         PlayerState->LogInfo();
     }
 }
 
-void AShooterGameModeBase::StartRespawn(AController *Controller)
+void AShooterGameModeBase::StartRespawn(AController* Controller)
 {
     const auto RespawnAvaiable = RoundTimeLeft > MinRoundTimeForRespawn + GameData.RespawnTime;
     if (!RespawnAvaiable)
@@ -186,13 +195,13 @@ void AShooterGameModeBase::StartRespawn(AController *Controller)
         return;
 
     RespawnComponent->Respawn(GameData.RespawnTime);
+
 }
 
 void AShooterGameModeBase::GameOver()
 {
     UE_LOG(LogShooterGameModeBase, Display, TEXT("======= GAME OVER ======="))
     LogPlayerInfo();
-    SetMatchState(EMatchState::GameOver);
 
     for (auto Pawn : TActorRange<APawn>(GetWorld()))
     {
@@ -202,22 +211,22 @@ void AShooterGameModeBase::GameOver()
             Pawn->DisableInput(nullptr);
         }
     }
+    SetMatchState(EMatchState::GameOver);
 }
 
 void AShooterGameModeBase::SetMatchState(EMatchState State)
 {
     if (MatchState == State)
         return;
-
     MatchState = State;
     OnMatchStateChanged.Broadcast(MatchState);
-    UE_LOG(LogShooterGameModeBase, Display, TEXT("Match state set: %s"), *UEnum::GetValueAsString(MatchState));
 }
 
 void AShooterGameModeBase::Killed(AController *KillerController, AController *VictimController)
 {
     const auto KillerPlayerState = KillerController ? Cast<ABasePlayerState>(KillerController->PlayerState) : nullptr;
     const auto VictimPlayerState = VictimController ? Cast<ABasePlayerState>(VictimController->PlayerState) : nullptr;
+
 
     if (KillerPlayerState)
     {

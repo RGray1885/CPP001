@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "ProjectCoreTypes.h"
 #include "GameHUD.generated.h"
 
 /**
@@ -26,4 +27,5 @@ class CPP001_API AGameHUD : public AHUD
 
   private:
     void DrawCrosshair();
+    void OnMatchStateChanged(EMatchState State);
 };

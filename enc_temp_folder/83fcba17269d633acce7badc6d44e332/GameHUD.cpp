@@ -19,7 +19,6 @@ void AGameHUD::DrawHUD()
 
 void AGameHUD::BeginPlay()
 {
-    Super::BeginPlay();
     PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass);
     if (PlayerHUDWidget)
     {
@@ -48,5 +47,5 @@ void AGameHUD::DrawCrosshair()
 
 void AGameHUD::OnMatchStateChanged(EMatchState State)
 {
-    UE_LOG(LogGameHUD, Display, TEXT("Match state changed: %s"), *UEnum::GetValueAsString(State));
+    UE_LOG(LogGameHUD, Display, TEXT("Match statechanged: %s"), *UEnum::GetValueAsString(State));
 }
