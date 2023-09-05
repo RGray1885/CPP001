@@ -22,8 +22,13 @@ class CPP001_API AGameHUD : public AHUD
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
     UUserWidget *PlayerHUDWidget;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> PauseWidgetClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> GameOverWidgetClass;
+
     virtual void BeginPlay() override;
 
 
