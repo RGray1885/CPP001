@@ -20,9 +20,15 @@ AAICharacter::AAICharacter(const FObjectInitializer& ObjInit) : Super(ObjInit.Se
     }
 }
 
+
 void AAICharacter::OnDeath()
 {
     Super::OnDeath();
+    WeaponComponent = GetComponentByClass<UAIWeaponComponent>();
+    if (WeaponComponent)
+    {
+    WeaponComponent->StopFiring();
+    }
 
     const auto CurrentController = Cast<AAIController>(Controller);
     if (CurrentController && CurrentController->BrainComponent)

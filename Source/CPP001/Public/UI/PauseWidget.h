@@ -17,7 +17,7 @@ class CPP001_API UPauseWidget : public UUserWidget
     GENERATED_BODY()
 
   protected:
-    virtual bool Initialize() override;
+    virtual void NativeOnInitialized() override;
 
   protected:
     UPROPERTY(meta = (BindWidget))

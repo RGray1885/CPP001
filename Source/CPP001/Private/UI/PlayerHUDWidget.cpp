@@ -74,14 +74,25 @@ bool UPlayerHUDWidget::IsPlayerSpectating() const
 }
 
 
-bool UPlayerHUDWidget::Initialize()
+void UPlayerHUDWidget::NativeOnInitialized()
 {
-    const auto HealthComponent = ProjectUtils::GetPlayerComponent<UHealthComponent>(GetOwningPlayerPawn());
+
+    if (GetOwningPlayer())
+    {
+    GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &UPlayerHUDWidget::OnNewPawn);
+    OnNewPawn(GetOwningPlayerPawn());
+    }
+  
+    
+}
+
+void UPlayerHUDWidget::OnNewPawn(APawn *NewPawn)
+{
+    const auto HealthComponent = ProjectUtils::GetPlayerComponent<UHealthComponent>(NewPawn);
     if (HealthComponent)
     HealthComponent->OnDamageTaken.AddUObject(this, &UPlayerHUDWidget::OnDamageTaken);
-    
-    return Super::Initialize();
 }
+
 
 void UPlayerHUDWidget::OnDamageTaken()
 {

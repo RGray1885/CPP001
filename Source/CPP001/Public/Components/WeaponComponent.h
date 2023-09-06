@@ -96,6 +96,8 @@ class CPP001_API UWeaponComponent : public UActorComponent
     bool GetAmmoUIData(FString &AmmoData) const;
     bool GetWeaponAmmoUIData(FWeaponUIData &UIData, FString &AmmoData) const;
     ABaseWeapon* GetWeapon(TSubclassOf<ABaseWeapon> Weapon) const;
+
+    
   
    
 };

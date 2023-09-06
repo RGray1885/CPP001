@@ -7,6 +7,7 @@
 #include "Components/RespawnComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "ShooterGameModeBase.h"
 
 ABaseAIController::ABaseAIController()
 {
@@ -14,8 +15,13 @@ ABaseAIController::ABaseAIController()
     SetPerceptionComponent(*AIPerceptionComponent);
 
     RespawnComponent = CreateDefaultSubobject<URespawnComponent>("AIRespawnComponent");
-
+    
     bWantsPlayerState = true;
+}
+
+void ABaseAIController::OnGameOver()
+{
+    BrainComponent->StopLogic("");
 }
 
 void ABaseAIController::OnPossess(APawn *InPawn)

@@ -18,6 +18,7 @@ class CPP001_API ABaseAIController : public AAIController
     GENERATED_BODY()
   public:
     ABaseAIController();
+    void OnGameOver();
 
   protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")

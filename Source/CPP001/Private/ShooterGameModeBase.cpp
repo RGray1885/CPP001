@@ -2,13 +2,18 @@
 
 #include "ShooterGameModeBase.h"
 #include "AIController.h"
+#include "AI/BaseAIController.h"
 #include "Components/RespawnComponent.h"
 #include "EngineUtils.h"
 #include "Player/BaseCharacter.h"
 #include "Player/BasePlayerController.h"
 #include "Player/BasePlayerState.h"
+#include "Components/WeaponComponent.h"
+#include "Components/AIWeaponComponent.h"
 #include "ProjectUtils.h"
 #include "UI/GameHUD.h"
+
+#include "GameInstanceBase.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogShooterGameModeBase, All, All);
 
@@ -109,11 +114,7 @@ void AShooterGameModeBase::ResetOnePlayer(AController *Controller)
     }
     RestartPlayer(Controller);
     SetPlayerColor(Controller);
-
-    const auto PlayerController = Cast<ABasePlayerController>(Controller);
-
-    if (PlayerController)
-        InitializeHUDForPlayer(PlayerController);
+      
 }
 
 void AShooterGameModeBase::CreateTeamsInfo()
@@ -201,6 +202,10 @@ void AShooterGameModeBase::GameOver()
         {
             Pawn->TurnOff();
             Pawn->DisableInput(nullptr);
+           const auto PawnAI = Cast<ABaseAIController>(Pawn->GetController());
+           if (PawnAI)
+           PawnAI->OnGameOver();
+            
         }
     }
 }

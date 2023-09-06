@@ -35,7 +35,9 @@ public class CPP001 : ModuleRules
 			"CPP001/Public/AI/Tasks",
             "CPP001/Public/AI/Services",
 			"CPP001/Public/AI/EQS",
-            "CPP001/Public/AI/Decorators"
+            "CPP001/Public/AI/Decorators",
+			"CPP001/Public/Menu",
+			"CPP001/Public/Menu/UI"
 
 
         });

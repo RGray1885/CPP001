@@ -12,13 +12,12 @@
  */
 
 class UVerticalBox;
+class UButton;
 UCLASS()
 class CPP001_API UGameOverWidget : public UUserWidget
 {
     GENERATED_BODY()
 
-  public:
-    virtual bool Initialize() override;
 
   protected:
     UPROPERTY(meta = (BindWidget))
@@ -27,7 +26,14 @@ class CPP001_API UGameOverWidget : public UUserWidget
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> PlayerStatRowWidgetClass;
 
+    UPROPERTY(meta = (BindWidget))
+    UButton *RestartButton;
+
+    virtual void NativeOnInitialized() override;
+
   private:
     void OnMatchStateChanged(EMatchState State);
     void UpdatePlayersStat();
+    UFUNCTION()
+    void RestartLevel();
 };

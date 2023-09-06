@@ -39,8 +39,9 @@ class CPP001_API UPlayerHUDWidget : public UUserWidget
     UWeaponComponent* GetCurrentWeaponComponent()const;
     UHealthComponent* GetHealthComponent() const;
 
-    virtual bool Initialize();
+    virtual void NativeOnInitialized() override;
 
   private:
     void OnDamageTaken();
+    void OnNewPawn(APawn* NewPawn);
 };

@@ -34,6 +34,8 @@ void UWeaponComponent::BeginPlay()
     InitAnimations();
     SpawnWeapons();
     EquipWeapon(CurrentWeaponIndex);
+
+
 	// ...
 	
 }
