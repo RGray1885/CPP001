@@ -5,6 +5,8 @@
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameInstanceBase.h"
+#include "Components/HorizontalBox.h"
+#include "Menu/UI/LevelIconWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMenuWidget, All, All);
 
@@ -20,6 +22,7 @@ void UMenuWidget::NativeOnInitialized()
     {
         QuitGameButton->OnClicked.AddDynamic(this, &UMenuWidget::OnQuitGame);
     }
+    InitLevelItems();
 }
 
 void UMenuWidget::OnStartGame()
@@ -31,12 +34,12 @@ void UMenuWidget::OnStartGame()
     if (!GameInstance)
         return;
 
-    if (GameInstance->GetStartupLevelName().IsNone())
+    /* if (GameInstance->GetStartupLevelName().IsNone())
     {
         UE_LOG(LogMenuWidget, Error, TEXT("Level name is NONE"));
         return;
-    }
-    UGameplayStatics::OpenLevel(this, GameInstance->GetStartupLevelName());
+    }*/
+    UGameplayStatics::OpenLevel(this, GameInstance->GetStartupLevel().LevelName);
 }
 
 void UMenuWidget::OnQuitGame()
@@ -49,4 +52,60 @@ void UMenuWidget::OnQuitGame()
         return;
 
     UKismetSystemLibrary::QuitGame(this, GetOwningPlayer(), EQuitPreference::Quit, false);
+}
+
+void UMenuWidget::InitLevelItems()
+{
+    const auto GameInstance = GetGameInstance();
+    if (!GameInstance)
+        return;
+    checkf(GameInstance->GetLevelsData().Num() != 0, TEXT("Levels Data must not be Empty!"));
+
+    if (!LevelIconsList)
+        return;
+    LevelIconsList->ClearChildren();
+    for (auto LevelData : GameInstance->GetLevelsData())
+    {
+        const auto LevelIconWidget = CreateWidget<ULevelIconWidget>(GetWorld(),LevelIconWidgetClass);
+        if (!LevelIconWidget)
+            continue;
+
+        LevelIconWidget->SetLevelData(LevelData);
+        LevelIconWidget->OnLevelSelected.AddUObject(this, &UMenuWidget::OnLevelSelected);
+        LevelIconsList->AddChildToHorizontalBox(LevelIconWidget);
+        LevelIconWidgets.Add(LevelIconWidget);
+    }
+
+    if (GameInstance->GetStartupLevel().LevelName.IsNone())
+    {
+        OnLevelSelected(GameInstance->GetLevelsData()[0]);
+    }
+    else
+    {
+        OnLevelSelected(GameInstance->GetStartupLevel());
+    }
+}
+
+void UMenuWidget::OnLevelSelected(const FLevelData &Data)
+{
+    const auto GameInstance = GetGameInstance();
+    if (!GameInstance)
+        return;
+    GameInstance->SetStartupLevel(Data);
+    for (auto LevelIconWidget : LevelIconWidgets)
+    {
+        if (LevelIconWidget)
+        {
+            const auto IsSelected = Data.LevelName == LevelIconWidget->GetLevelData().LevelName;
+            LevelIconWidget->SetSelected(IsSelected);
+        }
+    }
+
+}
+
+UGameInstanceBase *UMenuWidget::GetGameInstance() const
+{
+    if (!GetWorld())
+    return nullptr;
+    return GetWorld()->GetGameInstance<UGameInstanceBase>();
 }

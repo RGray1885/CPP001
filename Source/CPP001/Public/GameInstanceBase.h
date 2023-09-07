@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "ProjectCoreTypes.h"
 #include "GameInstanceBase.generated.h"
 
 /**
@@ -15,18 +16,34 @@ class CPP001_API UGameInstanceBase : public UGameInstance
     GENERATED_BODY()
 
   public:
-    FName GetStartupLevelName() const
+    FLevelData GetStartupLevel() const
     {
-        return StartupLevelName;
+        return StartupLevel;
     }
+
+    void SetStartupLevel(const FLevelData &Data)
+    {
+        StartupLevel = Data;
+    }
+
+    TArray<FLevelData> GetLevelsData() const
+    {
+        return LevelsData;
+    }
+
     FName GetMenuLevelName() const
     {
         return MainMenuLevelName;
     }
 
   protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Game")
-    FName StartupLevelName = NAME_None;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Game", meta = (ToolTip = "Level names must be unique!"))
+    TArray<FLevelData> LevelsData;
+
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName MainMenuLevelName = NAME_None;
+
+    private:
+    FLevelData StartupLevel;
 };
