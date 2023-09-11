@@ -62,6 +62,9 @@ protected:
   float LifeSpanOnDeath = 5.0f;
   UPROPERTY(EditDefaultsOnly, Category = "Materials")
   FName MaterialColorName = "Paint Color";
+
+ virtual void OnHealthChanged(float Health);
+
   
 
 
@@ -79,7 +82,6 @@ private:
     bool bIsMovingForward;
     bool bIsMovingSideways;
   private:
-    void OnHealthChanged(float Health);
     UFUNCTION()
 	void OnGroundLanded(const FHitResult& Hit);
 public:
