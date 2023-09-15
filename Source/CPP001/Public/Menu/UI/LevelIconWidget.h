@@ -37,6 +37,12 @@ class CPP001_API ULevelIconWidget : public UUserWidget
     UFUNCTION()
     void OnLevelIconClicked();
 
+    UFUNCTION()
+    void OnLevelIconHovered();
+
+    UFUNCTION()
+    void OnLevelIconUnHovered();
+
     public:
     FOnLevelSelectedSignature OnLevelSelected;
 

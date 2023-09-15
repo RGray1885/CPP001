@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Blueprint/UserWidget.h"
+#include "UI/BaseWidget.h"
 #include "CoreMinimal.h"
 #include "PauseWidget.generated.h"
 
@@ -12,7 +12,7 @@
 
 class UButton;
 UCLASS()
-class CPP001_API UPauseWidget : public UUserWidget
+class CPP001_API UPauseWidget : public UBaseWidget
 {
     GENERATED_BODY()
 

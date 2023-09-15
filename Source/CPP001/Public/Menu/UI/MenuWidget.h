@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/BaseWidget.h"
 #include "ProjectCoreTypes.h"
 #include "MenuWidget.generated.h"
 
@@ -16,7 +16,7 @@ class UGameInstanceBase;
 class ULevelIconWidget;
 
 UCLASS()
-class CPP001_API UMenuWidget : public UUserWidget
+class CPP001_API UMenuWidget : public UBaseWidget
 {
 	GENERATED_BODY()
 	
@@ -29,9 +29,12 @@ class CPP001_API UMenuWidget : public UUserWidget
     UHorizontalBox *LevelIconsList;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> LevelIconWidgetClass;
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation *HideAnimation;
 
 
 	virtual void NativeOnInitialized() override;
+    virtual void OnAnimationFinished_Implementation(const UWidgetAnimation *Animation) override;
 
 	private:
 

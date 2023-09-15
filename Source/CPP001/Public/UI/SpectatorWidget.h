@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/BaseWidget.h"
 #include "SpectatorWidget.generated.h"
 
 /**

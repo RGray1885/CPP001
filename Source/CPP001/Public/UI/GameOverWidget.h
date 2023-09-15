@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Blueprint/UserWidget.h"
+#include "UI/BaseWidget.h"
 #include "CoreMinimal.h"
 #include "ProjectCoreTypes.h"
 #include "GameOverWidget.generated.h"
@@ -14,7 +14,7 @@
 class UVerticalBox;
 class UButton;
 UCLASS()
-class CPP001_API UGameOverWidget : public UUserWidget
+class CPP001_API UGameOverWidget : public UBaseWidget
 {
     GENERATED_BODY()
 

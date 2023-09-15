@@ -25,21 +25,40 @@ void UMenuWidget::NativeOnInitialized()
     InitLevelItems();
 }
 
+void UMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation *Animation)
+{
+    if (Animation == HideAnimation)
+    {
+        const auto GameInstance = GetWorld()->GetGameInstance<UGameInstanceBase>();
+        if (!GameInstance)
+        {
+            return;
+        }
+        else
+        {
+            UGameplayStatics::OpenLevel(this, GameInstance->GetStartupLevel().LevelName);
+        }
+    }
+    else
+    {
+        return;
+    }
+   
+}
+
 void UMenuWidget::OnStartGame()
 {
-    if (!GetWorld())
-        return;
 
-    const auto GameInstance = GetWorld()->GetGameInstance<UGameInstanceBase>();
-    if (!GameInstance)
-        return;
+     PlayAnimation(HideAnimation);
+
+    
 
     /* if (GameInstance->GetStartupLevelName().IsNone())
     {
         UE_LOG(LogMenuWidget, Error, TEXT("Level name is NONE"));
         return;
     }*/
-    UGameplayStatics::OpenLevel(this, GameInstance->GetStartupLevel().LevelName);
+    
 }
 
 void UMenuWidget::OnQuitGame()

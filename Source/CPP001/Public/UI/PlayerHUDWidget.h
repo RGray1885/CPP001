@@ -13,7 +13,7 @@ class UHealthComponent;
  * 
  */
 UCLASS()
-class CPP001_API UPlayerHUDWidget : public UUserWidget
+class CPP001_API UPlayerHUDWidget : public UBaseWidget
 {
 	GENERATED_BODY()
   public:
@@ -38,10 +38,14 @@ class CPP001_API UPlayerHUDWidget : public UUserWidget
   protected:
     UWeaponComponent* GetCurrentWeaponComponent()const;
     UHealthComponent* GetHealthComponent() const;
+    
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation *DamageAnimation;
 
     virtual void NativeOnInitialized() override;
 
   private:
     void OnDamageTaken();
     void OnNewPawn(APawn* NewPawn);
+    void PlayDamageAnim();
 };

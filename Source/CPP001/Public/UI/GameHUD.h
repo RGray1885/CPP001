@@ -7,6 +7,9 @@
 #include "ProjectCoreTypes.h"
 #include "GameHUD.generated.h"
 
+
+class UBaseWidget;
+
 /**
  *
  */
@@ -35,10 +38,10 @@ class CPP001_API AGameHUD : public AHUD
   private:
 
       UPROPERTY()
-    TMap<EMatchState, UUserWidget *> GameWidgets;
+    TMap<EMatchState, UBaseWidget *> GameWidgets;
 
       UPROPERTY()
-    UUserWidget *CurrentWidget = nullptr;
+    UBaseWidget *CurrentWidget = nullptr;
 
     void DrawCrosshair();
     void OnMatchStateChanged(EMatchState State);

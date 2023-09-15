@@ -12,12 +12,30 @@ void ULevelIconWidget::NativeOnInitialized()
     if (LevelButton)
     {
         LevelButton->OnClicked.AddDynamic(this, &ULevelIconWidget::OnLevelIconClicked);
+        LevelButton->OnHovered.AddDynamic(this, &ULevelIconWidget::OnLevelIconHovered);
+        LevelButton->OnUnhovered.AddDynamic(this, &ULevelIconWidget::OnLevelIconUnHovered);
     }
 }
 
 void ULevelIconWidget::OnLevelIconClicked()
 {
     OnLevelSelected.Broadcast(LevelData);
+}
+
+void ULevelIconWidget::OnLevelIconHovered()
+{
+    if (IsValid(FrameImage))
+    {
+        FrameImage->SetVisibility(ESlateVisibility::Visible);
+    }
+}
+
+void ULevelIconWidget::OnLevelIconUnHovered()
+{
+    if (IsValid(FrameImage))
+    {
+        FrameImage->SetVisibility(ESlateVisibility::Hidden);
+    }
 }
 
 void ULevelIconWidget::SetLevelData(const FLevelData &Data)
@@ -36,8 +54,8 @@ void ULevelIconWidget::SetLevelData(const FLevelData &Data)
 
 void ULevelIconWidget::SetSelected(bool IsSelected)
 {
-    if (FrameImage)
+    if (IsValid(LevelImage))
     {
-        FrameImage->SetVisibility(IsSelected ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+        LevelImage->SetColorAndOpacity(IsSelected ? FLinearColor::Red : FLinearColor::White);
     }
 }

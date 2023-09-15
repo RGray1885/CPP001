@@ -93,10 +93,21 @@ void UPlayerHUDWidget::OnNewPawn(APawn *NewPawn)
     HealthComponent->OnDamageTaken.AddUObject(this, &UPlayerHUDWidget::OnDamageTaken);
 }
 
+void UPlayerHUDWidget::PlayDamageAnim()
+{
+    if (!IsAnimationPlaying(DamageAnimation))
+    {
+        
+        PlayAnimation(DamageAnimation);
+
+    }
+}
+
 
 void UPlayerHUDWidget::OnDamageTaken()
 {
-    OnTakeDamage();
+    PlayDamageAnim();
+    //OnTakeDamage();
 }
 
 /* UWeaponComponent *UPlayerHUDWidget::GetCurrentWeaponComponent() const
