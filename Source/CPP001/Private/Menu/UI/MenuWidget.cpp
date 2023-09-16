@@ -7,6 +7,7 @@
 #include "GameInstanceBase.h"
 #include "Components/HorizontalBox.h"
 #include "Menu/UI/LevelIconWidget.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogMenuWidget, All, All);
 
@@ -50,6 +51,7 @@ void UMenuWidget::OnStartGame()
 {
 
      PlayAnimation(HideAnimation);
+    UGameplayStatics::PlaySound2D(GetWorld(), StartGameSound);
 
     
 

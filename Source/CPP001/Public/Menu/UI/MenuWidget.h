@@ -14,6 +14,7 @@ class UButton;
 class UHorizontalBox;
 class UGameInstanceBase;
 class ULevelIconWidget;
+class USoundCue;
 
 UCLASS()
 class CPP001_API UMenuWidget : public UBaseWidget
@@ -31,6 +32,8 @@ class CPP001_API UMenuWidget : public UBaseWidget
     TSubclassOf<UUserWidget> LevelIconWidgetClass;
     UPROPERTY(meta = (BindWidgetAnim), Transient)
     UWidgetAnimation *HideAnimation;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue *StartGameSound;
 
 
 	virtual void NativeOnInitialized() override;

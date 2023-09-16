@@ -9,6 +9,8 @@
 /**
  * 
  */
+
+class USoundCue;
 UCLASS()
 class CPP001_API UBaseWidget : public UUserWidget
 {
@@ -20,6 +22,7 @@ class CPP001_API UBaseWidget : public UUserWidget
 		protected:
     UPROPERTY(meta = (BindWidgetAnim), Transient)
     UWidgetAnimation *ShowAnimation;
-
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue *OpenSound;
 	
 };
