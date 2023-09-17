@@ -28,6 +28,7 @@ protected:
 	UProjectileMovementComponent *ProjectileMovementComponent;
     UPROPERTY(VisibleAnywhere, Category = "Effects")
     UWeaponFXComponent *WeaponFXComponent;
+    
 
 public:	
 	void SetShotDirection(FVector Direction){ShotDirection = Direction;}

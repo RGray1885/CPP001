@@ -12,6 +12,8 @@
 #include "Weapon/BaseWeapon.h"
 #include "Components/WeaponComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All);
 
@@ -102,6 +104,7 @@ void ABaseCharacter::OnDeath()
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     GetMesh()->SetSimulatePhysics(true);
     
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerDeathSoundCue, GetActorLocation());
 }
 
 void ABaseCharacter::OnHealthChanged(float Health)

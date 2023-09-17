@@ -13,6 +13,7 @@ class UHealthComponent;
 class UBaseCharMoveComponent;
 class ABaseWeapon;
 class UWeaponComponent;
+class USoundCue;
 
 
 UCLASS()
@@ -62,6 +63,8 @@ protected:
   float LifeSpanOnDeath = 5.0f;
   UPROPERTY(EditDefaultsOnly, Category = "Materials")
   FName MaterialColorName = "Paint Color";
+  UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Audio")
+  USoundCue* PlayerDeathSoundCue;
 
  virtual void OnHealthChanged(float Health);
 

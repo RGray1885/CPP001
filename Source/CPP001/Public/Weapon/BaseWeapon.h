@@ -10,6 +10,7 @@
 
 class UNiagaraSystem;
 class UNiagaraComponent;
+class USoundCue;
 //DECLARE_MULTICAST_DELEGATE(FOnClipEmptySignature);
 
 /* USTRUCT(BlueprintType)                                                                               //Moved to ProjectCoreTypes.h
@@ -57,8 +58,8 @@ protected:
   FWeaponUIData UIData;
   UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
   UNiagaraSystem *MuzzleFX;
-
-  
+  UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+  USoundCue *FireSound;
   
  
 

@@ -24,6 +24,8 @@ AProjectileRocket::AProjectileRocket()
     ProjectileMovementComponent->ProjectileGravityScale = 0.1f;
 
     WeaponFXComponent = CreateDefaultSubobject<UWeaponFXComponent>("WeaponFXComponent");
+
+    
 }
 
 // Called when the game starts or when spawned

@@ -5,6 +5,9 @@
 #include "Weapon/Components/WeaponFXComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 
 ARifleWeapon::ARifleWeapon()
 {
@@ -33,7 +36,7 @@ void ARifleWeapon::StopFire()
 {
     TriggerPulled = false;
     GetWorld()->GetTimerManager().ClearTimer(ShotTimer);
-    SetMuzzleFXVisibility(false);
+    SetFXActive(false);
 }
 
 void ARifleWeapon::BeginPlay()
@@ -51,7 +54,7 @@ void ARifleWeapon::MakeShot()
         return;
     if (!GetWorld())
         return;
-    InitMuzzleFX();
+    InitFX();
 
     FVector TraceStart;                         
     FVector TraceEnd;
@@ -91,21 +94,31 @@ bool ARifleWeapon::GetTraceData(FVector &TraceStart, FVector &TraceEnd) const
     TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
     return true;
 }
-void ARifleWeapon::InitMuzzleFX()
+void ARifleWeapon::InitFX()
 {
     if (!MuzzleFXComponent)
     {
         MuzzleFXComponent = SpawnMuzzleFX();
     }
-    SetMuzzleFXVisibility(true);
+    if (!IsValid(FireAudioComponent))
+    {
+        FireAudioComponent = UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);
+    }
+    SetFXActive(true);
 }
-void ARifleWeapon::SetMuzzleFXVisibility(bool Visible)
+void ARifleWeapon::SetFXActive(bool IsActive)
 {
     if (MuzzleFXComponent)
     {
         //MuzzleFXComponent->DestroyComponent(true);
-        MuzzleFXComponent->SetPaused(!Visible);
-        MuzzleFXComponent->SetVisibility(Visible, true);
+        MuzzleFXComponent->SetPaused(!IsActive);
+        MuzzleFXComponent->SetVisibility(IsActive, true);
+    }
+    if (IsValid(FireAudioComponent))
+    {
+        if (IsActive && FireAudioComponent->IsPlaying())
+            return;
+        IsActive ? FireAudioComponent->Play() : FireAudioComponent->Stop();
     }
 }
 void ARifleWeapon::SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd)

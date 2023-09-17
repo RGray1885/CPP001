@@ -13,6 +13,7 @@
 class UNiagaraComponent;
 class UNiagaraSystem;
 class UWeaponFXComponent;
+class UAudioComponent;
 UCLASS()
 class CPP001_API ARifleWeapon : public ABaseWeapon
 {
@@ -49,7 +50,10 @@ class CPP001_API ARifleWeapon : public ABaseWeapon
   private:
     FTimerHandle ShotTimer;
     bool TriggerPulled;
-    void InitMuzzleFX();
-    void SetMuzzleFXVisibility(bool Visible);
+    void InitFX();
+    void SetFXActive(bool IsActive);
     void SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd);
+    
+    UPROPERTY()
+    UAudioComponent *FireAudioComponent;
 };

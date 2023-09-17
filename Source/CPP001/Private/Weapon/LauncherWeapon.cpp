@@ -4,11 +4,15 @@
 #include "Weapon/LauncherWeapon.h"
 #include "Weapon/ProjectileRocket.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 void ALauncherWeapon::StartFire()
 {
     if (Super::HaveNoAmmoToShoot())
+    {
+        UGameplayStatics::SpawnSoundAtLocation(GetWorld(), NoAmmoSound, GetActorLocation());
         return;
+    }
     MakeShot();
 }
 
@@ -42,6 +46,7 @@ void ALauncherWeapon::MakeShot()
         
     }
     SpawnMuzzleFX();
+    UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);
     
     // set projectile params
    // UGameplayStatics::FinishSpawningActor(Projectile, SpawnTransform);

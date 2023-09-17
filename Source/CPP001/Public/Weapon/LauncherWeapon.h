@@ -10,6 +10,7 @@
  * 
  */
 class AProjectileRocket;
+class USoundCue;
 UCLASS()
 class CPP001_API ALauncherWeapon : public ABaseWeapon
 {
@@ -30,4 +31,6 @@ class CPP001_API ALauncherWeapon : public ABaseWeapon
     bool DoFullDamage = false;
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     float ProjectileLifeTime = 5.0f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue *NoAmmoSound;
 };
