@@ -117,7 +117,7 @@ void ARifleWeapon::SetFXActive(bool IsActive)
     if (IsValid(FireAudioComponent))
     {
         if (IsActive && FireAudioComponent->IsPlaying())
-            return;
+            return; // without it loop sound will start play every time when makeshot() fires
         IsActive ? FireAudioComponent->Play() : FireAudioComponent->Stop();
     }
 }

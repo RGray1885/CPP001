@@ -9,6 +9,7 @@
 class USphereComponent;
 class UStaticMeshComponent;
 class URotatingMovementComponent;
+class USoundCue;
 
 UCLASS()
 class CPP001_API ABasePickup : public AActor
@@ -32,6 +33,8 @@ protected:
     FTimerHandle RespawnTimerHandle;
     //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
     //bool CoulBeTakenTest = true;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue *PickupSound;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

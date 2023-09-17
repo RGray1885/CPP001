@@ -5,6 +5,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "Components/DecalComponent.h"
 
 
@@ -52,6 +53,7 @@ void UWeaponFXComponent::PlayImpactFX(const FHitResult &HitInfo)
 	}
     UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactData.NiagaraEffect, HitInfo.ImpactPoint,
                                                    HitInfo.ImpactNormal.Rotation());
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactData.ImpactSound, HitInfo.ImpactPoint);
 
 	auto DecalComponent = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), ImpactData.DecalData.Material, ImpactData.DecalData.Size,
                                            HitInfo.Location, HitInfo.ImpactNormal.Rotation());

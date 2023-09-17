@@ -4,6 +4,7 @@
 //weapon
 class ABaseWeapon;
 class UNiagaraSystem;
+class USoundCue;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature,ABaseWeapon*);
 
@@ -86,6 +87,9 @@ struct FImpactData
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
     FDecalData DecalData;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue *ImpactSound;
 };
 
 USTRUCT(BlueprintType)

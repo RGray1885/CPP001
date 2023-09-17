@@ -9,7 +9,7 @@
 
 class UNiagaraSystem;
 class UPhysicalMaterial;
-
+class USoundCue;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class CPP001_API UWeaponFXComponent : public UActorComponent
