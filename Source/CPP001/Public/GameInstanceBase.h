@@ -10,6 +10,9 @@
 /**
  *
  */
+
+class USoundClass;
+
 UCLASS()
 class CPP001_API UGameInstanceBase : public UGameInstance
 {
@@ -36,6 +39,8 @@ class CPP001_API UGameInstanceBase : public UGameInstance
         return MainMenuLevelName;
     }
 
+    void ToggleVolume();
+
   protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Game", meta = (ToolTip = "Level names must be unique!"))
@@ -44,6 +49,10 @@ class CPP001_API UGameInstanceBase : public UGameInstance
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName MainMenuLevelName = NAME_None;
 
-    private:
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+
+    USoundClass *MasterSoundClass;
+    
+private:
     FLevelData StartupLevel;
 };

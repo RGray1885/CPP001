@@ -4,6 +4,7 @@
 #include "Player/BasePlayerController.h"
 #include "Components/RespawnComponent.h"
 #include "ShooterGameModeBase.h"
+#include "GameInstanceBase.h"
 
 
 ABasePlayerController::ABasePlayerController()
@@ -30,6 +31,7 @@ void ABasePlayerController::SetupInputComponent()
     if (!InputComponent)
         return;
     InputComponent->BindAction("PauseGame", IE_Pressed, this, &ABasePlayerController::OnPauseGame);
+    InputComponent->BindAction("Mute", IE_Pressed, this, &ABasePlayerController::OnMuteSound);
 }
 
 void ABasePlayerController::OnPauseGame()
@@ -50,5 +52,25 @@ void ABasePlayerController::OnMatchStateChanged(EMatchState State)
     {
         SetInputMode(FInputModeUIOnly());
         bShowMouseCursor = true;
+    }
+}
+
+void ABasePlayerController::OnMuteSound()
+{
+    if (!IsValid(GetWorld()))
+    {
+        return;
+    }
+    else
+    {
+        UGameInstanceBase* GameInstance = GetWorld()->GetGameInstance<UGameInstanceBase>();
+        if (!IsValid(GameInstance))
+        {
+            return;
+        }
+        else
+        {
+            GameInstance->ToggleVolume();
+        }
     }
 }

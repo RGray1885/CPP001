@@ -37,8 +37,8 @@ public class CPP001 : ModuleRules
 			"CPP001/Public/AI/EQS",
             "CPP001/Public/AI/Decorators",
 			"CPP001/Public/Menu",
-			"CPP001/Public/Menu/UI"
-
+			"CPP001/Public/Menu/UI",
+			"CPP001/Public/Sound"
 
         });
 

@@ -28,4 +28,5 @@ class CPP001_API ABasePlayerController : public APlayerController
     private:
     void OnPauseGame();
       void OnMatchStateChanged(EMatchState State);
+    void OnMuteSound();
 };

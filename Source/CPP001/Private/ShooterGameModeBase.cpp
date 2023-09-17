@@ -74,8 +74,8 @@ void AShooterGameModeBase::StartRound()
 
 void AShooterGameModeBase::UpdateRoundTimer()
 {
-    UE_LOG(LogShooterGameModeBase, Display, TEXT("Time: %i /Round: %i/%i"), RoundTimeLeft, CurrentRound,
-           GameData.RoundsNum);
+ //   UE_LOG(LogShooterGameModeBase, Display, TEXT("Time: %i /Round: %i/%i"), RoundTimeLeft, CurrentRound,
+   //        GameData.RoundsNum);
 
     // const auto TimerRate = GetWorldTimerManager().GetTimerRate(RoundTimerHandle);
     // RoundTimeLeft -= TimerRate;
