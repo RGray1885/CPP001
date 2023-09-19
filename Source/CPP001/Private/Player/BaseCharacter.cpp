@@ -101,10 +101,12 @@ void ABaseCharacter::OnDeath()
     SetLifeSpan(LifeSpanOnDeath);
     GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     WeaponComponent->StopFiring();
+    WeaponComponent->Zoom(false);
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     GetMesh()->SetSimulatePhysics(true);
     
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), PlayerDeathSoundCue, GetActorLocation());
+
 }
 
 void ABaseCharacter::OnHealthChanged(float Health)

@@ -30,6 +30,7 @@ class CPP001_API UWeaponComponent : public UActorComponent
     // Sets default values for this component's properties
     UWeaponComponent();
     bool CanFire() const;
+    void Zoom(bool Enabled);
 
 
   protected:

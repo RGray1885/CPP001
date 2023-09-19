@@ -23,6 +23,7 @@ class CPP001_API ARifleWeapon : public ABaseWeapon
 
     virtual void StartFire() override;
     virtual void StopFire() override;
+    virtual void Zoom(bool Enabled) override;
 
   protected:
     virtual void BeginPlay() override;
@@ -46,6 +47,8 @@ class CPP001_API ARifleWeapon : public ABaseWeapon
     UNiagaraSystem *TraceFX;
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effects")
     FString TraceTargetName = "TraceTarget";
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    float FOVZoomAngle = 50.f;
 
   private:
     FTimerHandle ShotTimer;
@@ -53,6 +56,7 @@ class CPP001_API ARifleWeapon : public ABaseWeapon
     void InitFX();
     void SetFXActive(bool IsActive);
     void SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd);
+    float DefaultCameraFOV = 90.f;
     
     UPROPERTY()
     UAudioComponent *FireAudioComponent;

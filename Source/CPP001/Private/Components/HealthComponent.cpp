@@ -1,11 +1,13 @@
 // Trying to make a simple game using c++ and a lot of help
 
 #include "Components/HealthComponent.h"
-#include "GameFramework/Actor.h"
-#include "GameFramework/Pawn.h"
+//#include "GameFramework/Actor.h"
+//#include "GameFramework/Pawn.h"
+#include "GameFrameWork/Character.h"
 #include "Camera/CameraShakeBase.h"
 #include "GameFramework/Controller.h"
 #include "ShooterGameModeBase.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 
 /*#include "FireDamageType.h"
 #include "IceDamageType.h"
@@ -26,6 +28,30 @@ UHealthComponent::UHealthComponent()
     // ...
 }
 
+void UHealthComponent::OnTakePointDamage(AActor *DamagedActor, float Damage, AController *InstigatedBy,
+                                         FVector HitLocation, UPrimitiveComponent *FHitComponent, FName BoneName,
+                                         FVector ShotFromDirection, const UDamageType *DamageType, AActor *DamageCauser)
+{
+    const auto FinalDamage = Damage * GetPointDamageModifier(DamagedActor,BoneName);
+    UE_LOG(LogHealthComponent, Display, TEXT("PointDamageTaken %f, final damage: %f, bone: %s"),Damage,FinalDamage,*BoneName.ToString());
+    ApplyDamage(FinalDamage, InstigatedBy);
+}
+
+void UHealthComponent::OnTakeRadialDamage(AActor *DamagedActor, float Damage, const UDamageType *DamageType,
+                                          FVector Origin, const FHitResult &HitInfo, AController *InstigatedBy,
+                                          AActor *DamageCauser)
+{
+    UE_LOG(LogHealthComponent, Display, TEXT("Radial Damage Taken^ %f"),Damage);
+
+    ApplyDamage(Damage, InstigatedBy);
+}
+
+void UHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const UDamageType *DamageType,
+                                       AController *InstigatedBy, AActor *DamageCauser)
+{
+    UE_LOG(LogHealthComponent, Display, TEXT("On Any damage taken: %f"), Damage);
+}
+
 // Called when the game starts
 void UHealthComponent::BeginPlay()
 {
@@ -38,6 +64,8 @@ void UHealthComponent::BeginPlay()
     if (ComponentOwner)
     {
         ComponentOwner->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::OnTakeAnyDamage);
+        ComponentOwner->OnTakePointDamage.AddDynamic(this, &UHealthComponent::OnTakePointDamage);
+        ComponentOwner->OnTakeRadialDamage.AddDynamic(this, &UHealthComponent::OnTakeRadialDamage);
     }
 
     // ...
@@ -61,50 +89,7 @@ void UHealthComponent::HealFromMedkit(float HealAmount)
         Health -= Amount;
     }
 }*/
-void UHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, const UDamageType *DamageType,
-                                           AController *InstigatedBy, AActor *DamageCauser)
-{
-    //DepleteHealth(Damage);
-    
-    if (Damage<=0.0f || IsDead())
-        return;
-    //Health = FMath::Clamp(Health - Damage, 0.0f,MaxHealth);
-    SetHealth(Health - Damage);
-    
-    //OnHealthChanged.Broadcast(Health);
-    if (GetOwner()->GetWorldTimerManager().IsTimerActive(HealTimer))
-    {
-        GetOwner()->GetWorldTimerManager().ClearTimer(HealTimer);
 
-    };
-    if (Health < MaxHealth && IsDead()==false)
-    {
-        //OnHeal(); 
-         bShouldHeal = true;
-        GetOwner()->GetWorldTimerManager().SetTimer(HealTimer,this,&UHealthComponent::OnHeal,HealUpdateTime,bShouldHeal,HealDelay);
-    }
-
-    if (IsDead())
-    {
-        Killed(InstigatedBy);
-        bShouldHeal = false;
-        OnDeath.Broadcast();
-    }
-    UE_LOG(LogHealthComponent, Display, TEXT("Damage: %f"),Damage);
-    /* if (DamageType)
-    {
-        if (DamageType->IsA<UFireDamageType>())
-        {
-            UE_LOG(LogHealthComponent, Display, TEXT("Fire Damage: %f"), Damage)
-        }
-        else if (DamageType->IsA<UIceDamageType>())
-        {
-            UE_LOG(LogHealthComponent, Display, TEXT("Ice Damage: %f"), Damage)
-        }
-    }*/
-    PlayCameraShake();
-    OnDamageTaken.Broadcast();
-}
 
 void UHealthComponent::OnHeal()
 {
@@ -151,6 +136,65 @@ void UHealthComponent::Killed(AController *KillerController)
     const auto Player = Cast<APawn>(GetOwner());
     const auto VictimController = Player ? Player->Controller : nullptr;
     GameMode->Killed(KillerController,VictimController);
+}
+
+void UHealthComponent::ApplyDamage(float Damage, AController *InstigatedBy)
+{
+    //DepleteHealth(Damage);
+    
+    if (Damage <= 0.0f || IsDead())
+        return;
+    // Health = FMath::Clamp(Health - Damage, 0.0f,MaxHealth);
+    SetHealth(Health - Damage);
+
+    // OnHealthChanged.Broadcast(Health);
+    if (GetOwner()->GetWorldTimerManager().IsTimerActive(HealTimer))
+    {
+        GetOwner()->GetWorldTimerManager().ClearTimer(HealTimer);
+    };
+    if (Health < MaxHealth && IsDead() == false)
+    {
+        // OnHeal();
+        bShouldHeal = true;
+        GetOwner()->GetWorldTimerManager().SetTimer(HealTimer, this, &UHealthComponent::OnHeal, HealUpdateTime,
+                                                    bShouldHeal, HealDelay);
+    }
+
+    if (IsDead())
+    {
+        Killed(InstigatedBy);
+        bShouldHeal = false;
+        OnDeath.Broadcast();
+    }
+    UE_LOG(LogHealthComponent, Display, TEXT("Damage: %f"), Damage);
+    /* if (DamageType)
+    {
+        if (DamageType->IsA<UFireDamageType>())
+        {
+            UE_LOG(LogHealthComponent, Display, TEXT("Fire Damage: %f"), Damage)
+        }
+        else if (DamageType->IsA<UIceDamageType>())
+        {
+            UE_LOG(LogHealthComponent, Display, TEXT("Ice Damage: %f"), Damage)
+        }
+    }*/
+    PlayCameraShake();
+    OnDamageTaken.Broadcast();
+}
+
+float UHealthComponent::GetPointDamageModifier(AActor *DamagedActor, const FName &BoneName)
+{
+    ACharacter* Character = Cast<ACharacter>(DamagedActor);
+    if (!IsValid(Character))
+    {
+        return 1.f;
+    }
+    const auto PhysMaterial = Character->GetMesh()->GetBodyInstance(BoneName)->GetSimplePhysicalMaterial();
+    if (!DamageModifier.Contains(PhysMaterial))
+    {
+        return 1.f;
+    }
+    return DamageModifier[PhysMaterial];
 }
 
 // Called every frame

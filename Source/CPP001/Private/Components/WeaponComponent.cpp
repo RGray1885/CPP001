@@ -124,6 +124,7 @@ void UWeaponComponent::EquipWeapon(int32 WeaponIndex)
     return;
     if (CurrentWeapon)                                                                      //if current weapon is valid
     {
+
     AttachWeaponToSocket(CurrentWeapon, OwnerCharacter->GetMesh(), WeaponArmorySocketName); //attach to another socket (on back by default)
     }
     CurrentWeapon = Weapons[WeaponIndex];                                                   //get new weapon from array
@@ -181,7 +182,8 @@ void UWeaponComponent::NextWeapon()                                    //Cycle t
         return;
     if (ReloadInProgress)
         return;
-    StopFiring();                                                      //Prevent weapon from firing during switching
+    StopFiring(); // Prevent weapon from firing during switching
+    Zoom(false);
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();     
     
     EquipWeapon(CurrentWeaponIndex);
@@ -265,6 +267,14 @@ bool UWeaponComponent::CanFire() const
         auto Player = Cast<ABaseCharacter>(CurrentWeapon->GetOwner());
 
         return CurrentWeapon && !EquipInProgress && !Player->GetIsRunning() && !ReloadInProgress;
+}
+
+void UWeaponComponent::Zoom(bool Enabled)
+{
+    if (IsValid(CurrentWeapon))
+    {
+        CurrentWeapon->Zoom(Enabled);
+    }
 }
 
 bool UWeaponComponent::CanEquip() const

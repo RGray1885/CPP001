@@ -39,6 +39,23 @@ void ARifleWeapon::StopFire()
     SetFXActive(false);
 }
 
+void ARifleWeapon::Zoom(bool Enabled)
+{
+    const APlayerController *Controller = Cast<APlayerController>(GetController());
+    if (!IsValid(Controller)||!IsValid(Controller->PlayerCameraManager))
+    {
+        return;
+    }
+    else
+    {
+        if (Enabled)
+        {
+            DefaultCameraFOV = Controller->PlayerCameraManager->GetFOVAngle();
+        }
+        Controller->PlayerCameraManager->SetFOV(Enabled ? FOVZoomAngle : DefaultCameraFOV);
+    }
+}
+
 void ARifleWeapon::BeginPlay()
 {
     Super::BeginPlay();
@@ -134,7 +151,10 @@ void ARifleWeapon::MakeDamage(const FHitResult &HitResult)
     const auto HitActor = HitResult.GetActor();
     if (!HitActor)
         return;
-    HitActor->TakeDamage(DamagePerHit, FDamageEvent{}, GetController(), this);
+
+    FPointDamageEvent PointDamageEvent;
+    PointDamageEvent.HitInfo = HitResult;
+    HitActor->TakeDamage(DamagePerHit, PointDamageEvent, GetController(), this);
 }
 
 AController *ARifleWeapon::GetController() const

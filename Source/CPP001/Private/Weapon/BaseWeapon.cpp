@@ -251,6 +251,10 @@ UNiagaraComponent *ABaseWeapon::SpawnMuzzleFX()
 }
 
 
+void ABaseWeapon::Zoom(bool Enabled)
+{
+}
+
 void ABaseWeapon::Reload()
 {
         if (!HaveNoAmmoToShoot())
