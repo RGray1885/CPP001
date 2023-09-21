@@ -79,4 +79,6 @@ class CPP001_API AShooterGameModeBase : public AGameModeBase
     void SetMatchState(EMatchState State);
     virtual bool SetPause(APlayerController *PC, FCanUnpause CanUnpauseDelegate = FCanUnpause()) override;
     virtual bool ClearPause() override;
+
+    void StopAllFire();
 };

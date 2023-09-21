@@ -146,11 +146,11 @@ FLinearColor AShooterGameModeBase::DetermineColorByTeamID(int32 TeamID) const
         return GameData.TeamColors[TeamID - 1];
     }
     UE_LOG(LogShooterGameModeBase, Warning, TEXT("No color for team if: %i, set to default: %s"), TeamID,
-           *GameData.DefaultTeamColor.ToString());
-    return GameData.DefaultTeamColor;
+           * GameData.DefaultTeamColor.ToString());
+           return GameData.DefaultTeamColor;
 }
 
-void AShooterGameModeBase::SetPlayerColor(AController *Controller)
+void AShooterGameModeBase::SetPlayerColor(AController* Controller)
 {
     if (!Controller)
         return;
@@ -178,7 +178,7 @@ void AShooterGameModeBase::LogPlayerInfo()
     }
 }
 
-void AShooterGameModeBase::StartRespawn(AController *Controller)
+void AShooterGameModeBase::StartRespawn(AController* Controller)
 {
     const auto RespawnAvaiable = RoundTimeLeft > MinRoundTimeForRespawn + GameData.RespawnTime;
     if (!RespawnAvaiable)
@@ -193,7 +193,7 @@ void AShooterGameModeBase::StartRespawn(AController *Controller)
 void AShooterGameModeBase::GameOver()
 {
     UE_LOG(LogShooterGameModeBase, Display, TEXT("======= GAME OVER ======="))
-    LogPlayerInfo();
+        LogPlayerInfo();
     SetMatchState(EMatchState::GameOver);
 
     for (auto Pawn : TActorRange<APawn>(GetWorld()))
@@ -202,10 +202,10 @@ void AShooterGameModeBase::GameOver()
         {
             Pawn->TurnOff();
             Pawn->DisableInput(nullptr);
-           const auto PawnAI = Cast<ABaseAIController>(Pawn->GetController());
-           if (PawnAI)
-           PawnAI->OnGameOver();
-            
+            const auto PawnAI = Cast<ABaseAIController>(Pawn->GetController());
+            if (PawnAI)
+                PawnAI->OnGameOver();
+
         }
     }
 }
@@ -220,14 +220,14 @@ void AShooterGameModeBase::SetMatchState(EMatchState State)
     UE_LOG(LogShooterGameModeBase, Display, TEXT("Match state set: %s"), *UEnum::GetValueAsString(MatchState));
 }
 
-bool AShooterGameModeBase::SetPause(APlayerController *PC, FCanUnpause CanUnpauseDelegate)
+bool AShooterGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
 {
     const auto PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
 
     if (PauseSet)
     {
         SetMatchState(EMatchState::Pause);
-
+        StopAllFire();
     }
 
     return Super::SetPause(PC, CanUnpauseDelegate);
@@ -241,6 +241,19 @@ bool AShooterGameModeBase::ClearPause()
         SetMatchState(EMatchState::InProgress);
     }
     return PauseCleared;
+}
+
+void AShooterGameModeBase::StopAllFire()
+{
+    for (APawn* Pawn : TActorRange<APawn>(GetWorld()))
+    {
+        const auto WeaponComponent = Pawn->FindComponentByClass<UWeaponComponent>();
+        if (!IsValid(WeaponComponent))
+            continue;
+
+        WeaponComponent->StopFiring();
+        WeaponComponent->Zoom(false);
+    }
 }
 
 void AShooterGameModeBase::Killed(AController *KillerController, AController *VictimController)

@@ -8,6 +8,8 @@
 #include "GameFramework/Controller.h"
 #include "ShooterGameModeBase.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "Perception/AISense_Damage.h"
+
 
 /*#include "FireDamageType.h"
 #include "IceDamageType.h"
@@ -179,6 +181,7 @@ void UHealthComponent::ApplyDamage(float Damage, AController *InstigatedBy)
         }
     }*/
     PlayCameraShake();
+    ReportDamageEvent(Damage, InstigatedBy);
     OnDamageTaken.Broadcast();
 }
 
@@ -195,6 +198,22 @@ float UHealthComponent::GetPointDamageModifier(AActor *DamagedActor, const FName
         return 1.f;
     }
     return DamageModifier[PhysMaterial];
+}
+
+void UHealthComponent::ReportDamageEvent(float Damage, AController *InstigatedBy)
+{
+    if (!IsValid(InstigatedBy) || !IsValid(InstigatedBy->GetPawn())||!IsValid(GetOwner()))
+        {return;}
+        else
+        {
+
+        UAISense_Damage::ReportDamageEvent(GetWorld(),                                  //
+                                           GetOwner(),                                  //
+                                           InstigatedBy->GetPawn(),                     //
+                                           Damage,                                      //
+                                           InstigatedBy->GetPawn()->GetActorLocation(), //
+                                           GetOwner()->GetActorLocation());             
+        } 
 }
 
 // Called every frame

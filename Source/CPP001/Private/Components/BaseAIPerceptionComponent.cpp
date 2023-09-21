@@ -6,6 +6,7 @@
 #include "ProjectUtils.h"
 #include "Components/HealthComponent.h"
 #include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Damage.h"
 
 
 AActor *UBaseAIPerceptionComponent::GetClosestEnemy() const
@@ -13,8 +14,14 @@ AActor *UBaseAIPerceptionComponent::GetClosestEnemy() const
     TArray<AActor *> PercievedActors;
     GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), PercievedActors);
     if (PercievedActors.Num() == 0)
-        return nullptr;
-    
+    {
+        GetCurrentlyPerceivedActors(UAISense_Damage::StaticClass(), PercievedActors);
+        if (PercievedActors.Num()==0)
+        {
+            return nullptr;
+        }
+        
+    }
     const auto Controller = Cast<AAIController>(GetOwner());
     if (!Controller)
         return nullptr;

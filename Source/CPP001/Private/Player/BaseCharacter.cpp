@@ -54,6 +54,20 @@ void ABaseCharacter::Tick(float DeltaTime)
    
 }
 
+void ABaseCharacter::TurnOff()
+{
+    WeaponComponent->StopFiring();
+    WeaponComponent->Zoom(false);
+    Super::TurnOff();
+}
+
+void ABaseCharacter::Reset()
+{
+    WeaponComponent->StopFiring();
+    WeaponComponent->Zoom(false);
+    Super::Reset();
+}
+
 
 // Called to bind functionality to input
 //void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
